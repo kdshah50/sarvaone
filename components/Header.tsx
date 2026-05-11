@@ -3,7 +3,7 @@ import { useState, Suspense, useEffect } from "react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
-import { langFromParam } from "@/lib/i18n-lang";
+import { langFromParam, type Lang, writeStoredLang } from "@/lib/i18n-lang";
 import { useCommunityLane } from "@/components/CommunityLaneContext";
 import type { CommunityLane } from "@/lib/community-lane";
 
@@ -72,19 +72,33 @@ function LangToggle() {
   const pathname = usePathname();
   const params = useSearchParams();
   const lang = langFromParam(params.get("lang"));
-  const toggle = (l: string) => {
+  const toggle = (l: Lang) => {
     const p = new URLSearchParams(params.toString());
     p.set("lang", l);
     router.push(`${pathname}?${p.toString()}`);
   };
+  const opts: { code: Lang; show: string }[] = [
+    { code: "en", show: "EN" },
+    { code: "es", show: "ES" },
+    { code: "hi", show: "हि" },
+    { code: "gu", show: "ગુ" },
+  ];
   return (
-    <div className="flex bg-[#F4F0EB] rounded-lg p-0.5 gap-0.5" title="Language">
-      {["en", "es"].map((l) => (
-        <button key={l} onClick={() => toggle(l)}
-          className={`px-3 py-1.5 rounded-md text-xs font-bold transition-all ${
-            lang === l ? "bg-white text-[#1B4332] shadow-sm" : "text-[#6B7280] hover:text-[#1B4332]"
+    <div className="flex bg-[#F4F0EB] rounded-lg p-0.5 gap-0.5" title="Language / भाषा / ભાષા">
+      {opts.map(({ code, show }) => (
+        <button
+          key={code}
+          type="button"
+          onClick={() => {
+            toggle(code);
+            writeStoredLang(code);
+          }}
+          className={`px-2 sm:px-2.5 py-1.5 rounded-md text-[10px] sm:text-xs font-bold transition-all ${
+            lang === code ? "bg-white text-[#1B4332] shadow-sm" : "text-[#6B7280] hover:text-[#1B4332]"
           }`}
-        >{l.toUpperCase()}</button>
+        >
+          {show}
+        </button>
       ))}
     </div>
   );

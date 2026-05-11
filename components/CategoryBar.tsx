@@ -11,8 +11,6 @@ function CategoryBarInner() {
   const params = useSearchParams();
   const { lane } = useCommunityLane();
   const lang = langFromParam(params.get("lang"));
-  const rawLang = params.get("lang")?.trim();
-  const categoryLang: Lang | "hi" = rawLang === "hi" ? "hi" : lang;
   const activeId = normalizeBrowseCategory(params.get("category"));
 
   const visibleCategories = useMemo(
@@ -44,9 +42,17 @@ function CategoryBarInner() {
         <div className="flex gap-1 py-3 min-w-max items-center">
           <span
             className="hidden sm:inline text-[10px] font-bold uppercase tracking-wider text-[#6B7280] pr-2 mr-1 border-r border-[#E5E0D8] shrink-0 self-center max-w-[5.5rem] leading-tight"
-            title={lang === "en" ? "Browse by marketplace category" : "Navega por categoría"}
+            title={
+              lang === "es"
+                ? "Navega por categoría"
+                : lang === "hi"
+                  ? "श्रेणियाँ ब्राउज़ करें"
+                  : lang === "gu"
+                    ? "શ્રેણીઓ બ્રાઉઝ કરો"
+                    : "Browse by marketplace category"
+            }
           >
-            {lang === "en" ? "Categories" : "Categorías"}
+            {lang === "es" ? "Categorías" : lang === "hi" ? "श्रेणियाँ" : lang === "gu" ? "શ્રેણીઓ" : "Categories"}
           </span>
           {visibleCategories.map((cat) => {
             const enabled = cat.browseEnabled;
@@ -71,16 +77,16 @@ function CategoryBarInner() {
                   >
                     {cat.icon}
                   </span>
-                  {categoryLabel(cat.id, categoryLang)}
+                  {categoryLabel(cat.id, lang)}
                   {!enabled && (
                     <span className="text-[9px] font-bold ml-1 px-1 py-0.5 rounded bg-[#E5E0D8] text-[#A8A095]">
-                      {lang === "es" ? "Próximo" : "Soon"}
+                      {lang === "es" ? "Próximo" : lang === "hi" ? "जल्द" : lang === "gu" ? "ટૂંકમાં" : "Soon"}
                     </span>
                   )}
                 </button>
                 {!enabled && (
                   <div className="absolute left-1/2 -translate-x-1/2 top-full mt-1 bg-[#1C1917] text-white text-[10px] rounded-md px-2 py-1 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
-                    {lang === "es" ? "Próximamente" : "Coming soon"}
+                    {lang === "es" ? "Próximamente" : lang === "hi" ? "जल्द ही" : lang === "gu" ? "ટૂંક સમયમાં" : "Coming soon"}
                   </div>
                 )}
               </div>

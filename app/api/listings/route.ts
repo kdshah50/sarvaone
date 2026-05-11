@@ -78,11 +78,21 @@ export async function POST(req: NextRequest) {
     const isVerified = !isService;
 
     // Always bind listing to the signed-in user — never trust client seller_id (old clients sent a demo uuid).
+    const titleEs = body.title_es ?? body.title ?? "Sin título";
+    const titleEn = body.title_en ?? body.title ?? titleEs;
+    const descEs = body.description_es ?? body.description ?? "";
+    const descEn = body.description_en ?? body.description ?? descEs;
+    const opt = (v: unknown) => (typeof v === "string" && v.trim() ? v.trim() : null);
     const listing = {
       seller_id:          userId,
-      title_es:           body.title_es ?? body.title ?? "Sin título",
-      title_en:           body.title_es ?? body.title ?? "Untitled",
-      description_es:     body.description_es ?? body.description ?? "",
+      title_es:           titleEs,
+      title_en:           titleEn,
+      title_hi:           opt(body.title_hi),
+      title_gu:           opt(body.title_gu),
+      description_es:     descEs,
+      description_en:     descEn,
+      description_hi:     opt(body.description_hi),
+      description_gu:     opt(body.description_gu),
       price_mxn,
       category_id:        category,
       listing_type:       isService ? "service" : "goods",
@@ -130,7 +140,19 @@ export async function POST(req: NextRequest) {
         headers: { "Content-Type": "application/json", "x-internal-secret": process.env.INTERNAL_API_SECRET ?? "tianguis_secret_2026" },
         body: JSON.stringify({
           listing_id: data[0].id,
-          text: `${listing.title_es} ${listing.description_es}`.trim(),
+          text: [
+            listing.title_es,
+            listing.title_en,
+            listing.title_hi,
+            listing.title_gu,
+            listing.description_es,
+            listing.description_en,
+            listing.description_hi,
+            listing.description_gu,
+          ]
+            .map((s) => (typeof s === "string" ? s.trim() : ""))
+            .filter(Boolean)
+            .join(" "),
         }),
       }).catch(() => {});
     }

@@ -1,6 +1,8 @@
 "use client";
-import { useState } from "react";
+import { Suspense, useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import { COLONIA_KEYS, COLONIAS as COLONIAS_MAP, coloniaLabel } from "@/lib/colonias";
+import { langFromParam, writeStoredLang, type Lang } from "@/lib/i18n-lang";
 
 const COLONIAS_LIST = COLONIA_KEYS.map(key => ({
   value: key,
@@ -148,8 +150,14 @@ const T = {
   },
 };
 
-export default function UnetePage() {
-  const [lang, setLang] = useState<"es"|"en">("en");
+function UnetePageInner() {
+  const searchParams = useSearchParams();
+  const [lang, setLang] = useState<Lang>("en");
+
+  useEffect(() => {
+    setLang(langFromParam(searchParams.get("lang")));
+  }, [searchParams]);
+
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
@@ -170,7 +178,7 @@ export default function UnetePage() {
     acceptPricing: false,
   });
 
-  const t = T[lang];
+  const t = lang === "es" ? T.es : T.en;
   const set = (k: string, v: any) => setForm(f => ({ ...f, [k]: v }));
 
   const handleSubmit = async () => {
@@ -182,12 +190,13 @@ export default function UnetePage() {
     setError("");
     try {
       const selectedService = SERVICES.find(s => s.value === form.service);
+      const serviceLabel = selectedService ? (lang === "es" ? selectedService.es : selectedService.en) : form.service;
       const res = await fetch("/api/provider-signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...form,
-          service_label: selectedService?.[lang] ?? form.service,
+          service_label: serviceLabel,
           lang,
           accepted_terms: true,
           accepted_pricing: true,
@@ -227,11 +236,14 @@ export default function UnetePage() {
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <a href="/" className="text-sm text-[#6B7280] hover:text-[#1B4332] transition-colors">← AISaravanna</a>
-          <div className="flex bg-[#F4F0EB] rounded-lg p-1 gap-1">
-            {(["en","es"] as const).map(l => (
-              <button key={l} onClick={() => setLang(l)}
-                className={`px-3 py-1 rounded-md text-xs font-bold transition-all ${lang===l ? "bg-white text-[#1B4332] shadow-sm" : "text-[#6B7280]"}`}>
-                {l.toUpperCase()}
+          <div className="flex bg-[#F4F0EB] rounded-lg p-1 gap-0.5 flex-wrap justify-end max-w-[11rem] sm:max-w-none">
+            {(["en", "es", "hi", "gu"] as const).map((l) => (
+              <button key={l} onClick={() => {
+                setLang(l);
+                writeStoredLang(l);
+              }}
+                className={`px-2 py-1 rounded-md text-[10px] font-bold transition-all ${lang===l ? "bg-white text-[#1B4332] shadow-sm" : "text-[#6B7280]"}`}>
+                {l === "hi" ? "हि" : l === "gu" ? "ગુ" : l.toUpperCase()}
               </button>
             ))}
           </div>
@@ -286,7 +298,7 @@ export default function UnetePage() {
                   className="w-full border border-[#E5E0D8] rounded-xl px-4 py-3 text-sm outline-none focus:border-[#1B4332] transition-colors bg-white">
                   <option value="">— {lang === "es" ? "Selecciona tu condado" : "Select your county"} —</option>
                   {COLONIAS_LIST.map(c => (
-                    <option key={c.value} value={c.value}>{c[lang]}</option>
+                    <option key={c.value} value={c.value}>{coloniaLabel(c.value, lang)}</option>
                   ))}
                 </select>
               </div>
@@ -363,7 +375,7 @@ export default function UnetePage() {
                   className="w-full border border-[#E5E0D8] rounded-xl px-4 py-3 text-sm outline-none focus:border-[#1B4332] transition-colors bg-white">
                   <option value="">— {lang === "es" ? "Selecciona" : "Select"} —</option>
                   {SERVICES.map(s => (
-                    <option key={s.value} value={s.value}>{s[lang]}</option>
+                    <option key={s.value} value={s.value}>{lang === "es" ? s.es : s.en}</option>
                   ))}
                 </select>
               </div>
@@ -487,9 +499,12 @@ export default function UnetePage() {
                 {[
                   [t.name,     form.name],
                   ["WhatsApp", form.whatsapp],
-                  [t.service,  SERVICES.find(s => s.value === form.service)?.[lang] ?? form.service],
+                  [t.service,  (() => {
+                    const s = SERVICES.find(x => x.value === form.service);
+                    return s ? (lang === "es" ? s.es : s.en) : form.service;
+                  })()],
                   [t.price,    `$${form.price} USD`],
-                  [t.colonia,  COLONIAS_LIST.find(c => c.value === form.colonia)?.[lang] ?? form.colonia],
+                  [t.colonia,  form.colonia ? coloniaLabel(form.colonia, lang) : form.colonia],
                   [t.providerType, form.provider_entity_type === "individual" ? t.individual : t.business],
                   ...(form.provider_entity_type === "individual" && form.drivers_license_number
                     ? [[t.dl.replace(" (optional)", "").replace(" (opcional)", ""), form.drivers_license_number]]
@@ -552,5 +567,13 @@ export default function UnetePage() {
         </p>
       </div>
     </main>
+  );
+}
+
+export default function UnetePage() {
+  return (
+    <Suspense fallback={<main className="min-h-screen bg-[#FDF8F1]" aria-busy="true" />}>
+      <UnetePageInner />
+    </Suspense>
   );
 }

@@ -5,7 +5,7 @@ import type { Lang } from "@/lib/i18n-lang";
  * Stripe `usd` Checkout uses the same cent semantics.
  */
 export function formatUsdCents(cents: number, lang: Lang = "en"): string {
-  const locale = lang === "es" ? "es-US" : "en-US";
+  const locale = lang === "es" ? "es-US" : "en-US"; // hi/gu: USD in Western numerals
   return new Intl.NumberFormat(locale, {
     style: "currency",
     currency: "USD",
@@ -16,7 +16,7 @@ export function formatUsdCents(cents: number, lang: Lang = "en"): string {
 
 /** Whole USD dollars (e.g. price filters in the URL), no cents shown. */
 export function formatUsdWhole(dollars: number, lang: Lang = "en"): string {
-  const locale = lang === "es" ? "es-US" : "en-US";
+  const locale = lang === "es" ? "es-US" : "en-US"; // hi/gu: USD in Western numerals
   return new Intl.NumberFormat(locale, {
     style: "currency",
     currency: "USD",

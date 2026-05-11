@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import ListingGrid from "@/components/listings/ListingGrid";
 import type { ListingCard } from "@/lib/types";
@@ -20,6 +20,8 @@ import { langFromParam, type Lang } from "@/lib/i18n-lang";
 type Props = {
   listings: ListingCard[];
   initialLang: Lang;
+  /** Same as server `normalizeBrowseCategory(searchParams.category)` for first paint. */
+  initialCategory: string;
   mapCenterLat: number;
   mapCenterLng: number;
   isDev?: boolean;
@@ -29,6 +31,7 @@ type Props = {
 export default function ListingBrowseSection({
   listings,
   initialLang,
+  initialCategory,
   mapCenterLat,
   mapCenterLng,
   isDev,
@@ -36,8 +39,11 @@ export default function ListingBrowseSection({
 }: Props) {
   const params = useSearchParams();
   const [mode, setMode] = useState<"list" | "map">("list");
+  const [lang, setLang] = useState<Lang>(initialLang);
 
-  const lang = langFromParam(params.get("lang"));
+  useEffect(() => {
+    setLang(langFromParam(params.get("lang")));
+  }, [params]);
 
   const withCoords = useMemo(
     () =>
@@ -90,6 +96,7 @@ export default function ListingBrowseSection({
         <ListingGrid
           listings={listings}
           initialLang={initialLang}
+          initialCategory={initialCategory}
           isDev={isDev}
           devPendingServicesEnabled={devPendingServicesEnabled}
         />

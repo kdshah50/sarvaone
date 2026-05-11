@@ -315,7 +315,7 @@ export function postgrestSparseKeywordClause(sparsePhrase: string): {
     .filter((t) => t.length >= 3 && !SPARSE_TOKEN_STOPWORDS.has(t));
   const unique = [...new Set(tokens)].slice(0, 8);
 
-  const fields = ["title_es", "title_en", "description_es", "description_en"] as const;
+  const fields = ["title_es", "title_en", "title_hi", "title_gu", "description_es", "description_en", "description_hi", "description_gu"] as const;
 
   if (unique.length === 0) {
     const safe = trimmed.replace(/[*%,()]/g, "").trim();
@@ -356,7 +356,7 @@ export function postgrestSparseKeywordClauseLoose(sparsePhrase: string): {
     .map((t) => t.replace(/[^a-záéíóúüñ0-9-]/gi, ""))
     .filter((t) => t.length >= 3 && !SPARSE_TOKEN_STOPWORDS.has(t));
   const unique = [...new Set(tokens)].slice(0, 8);
-  const fields = ["title_es", "title_en", "description_es", "description_en"] as const;
+  const fields = ["title_es", "title_en", "title_hi", "title_gu", "description_es", "description_en", "description_hi", "description_gu"] as const;
 
   const branches: string[] = [];
   if (unique.length === 0) {

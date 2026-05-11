@@ -34,6 +34,10 @@ export default function SellModal({ onClose }: { onClose: () => void }) {
   const [price, setPrice] = useState("");
   const [category, setCategory] = useState("electronics");
   const [desc, setDesc] = useState("");
+  const [titleHi, setTitleHi] = useState("");
+  const [titleGu, setTitleGu] = useState("");
+  const [descHi, setDescHi] = useState("");
+  const [descGu, setDescGu] = useState("");
   const [city, setCity] = useState("CDMX");
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
@@ -199,7 +203,12 @@ export default function SellModal({ onClose }: { onClose: () => void }) {
         body: JSON.stringify({
           title_es: title,
           title_en: title,
+          title_hi: titleHi.trim() || undefined,
+          title_gu: titleGu.trim() || undefined,
           description_es: desc || title,
+          description_en: desc || title,
+          description_hi: descHi.trim() || undefined,
+          description_gu: descGu.trim() || undefined,
           price_mxn: Math.round(parseFloat(price) * 100),
           category_id: category,
           condition: "good",
@@ -441,6 +450,35 @@ export default function SellModal({ onClose }: { onClose: () => void }) {
                   rows={2}
                   placeholder="Describe tu artículo..."
                   className="w-full border border-[#E5E0D8] rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#1B4332] resize-none"
+                />
+              </div>
+              <div className="rounded-xl border border-[#E5E0D8] bg-[#FFFBF0] p-3 space-y-3">
+                <p className="text-[10px] font-bold text-[#78350F] uppercase tracking-wide">Hindi / Gujarati (opcional)</p>
+                <input
+                  value={titleHi}
+                  onChange={(e) => setTitleHi(e.target.value)}
+                  placeholder="शीर्षक हिंदी में"
+                  className="w-full border border-[#E5E0D8] rounded-lg px-3 py-2 text-sm"
+                />
+                <input
+                  value={titleGu}
+                  onChange={(e) => setTitleGu(e.target.value)}
+                  placeholder="શીર્ષક ગુજરાતીમાં"
+                  className="w-full border border-[#E5E0D8] rounded-lg px-3 py-2 text-sm"
+                />
+                <textarea
+                  value={descHi}
+                  onChange={(e) => setDescHi(e.target.value)}
+                  rows={2}
+                  placeholder="विवरण हिंदी में"
+                  className="w-full border border-[#E5E0D8] rounded-lg px-3 py-2 text-sm resize-none"
+                />
+                <textarea
+                  value={descGu}
+                  onChange={(e) => setDescGu(e.target.value)}
+                  rows={2}
+                  placeholder="વર્ણન ગુજરાતીમાં"
+                  className="w-full border border-[#E5E0D8] rounded-lg px-3 py-2 text-sm resize-none"
                 />
               </div>
               <div>

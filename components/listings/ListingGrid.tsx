@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import { ListingCard } from "@/lib/types";
 import { WhatsAppBadgeLocked } from "@/components/WhatsAppCTA";
 import { SellerVerificationBadges } from "@/components/SellerVerificationBadges";
-import { DEFAULT_LANG, langFromParam, type Lang } from "@/lib/i18n-lang";
+import { DEFAULT_LANG, langFromParam, listingHref, type Lang } from "@/lib/i18n-lang";
 import { formatUsdCents } from "@/lib/money";
 import { isServiceVerticalCategory, normalizeBrowseCategory } from "@/lib/marketplace-categories";
 
@@ -15,6 +15,8 @@ type Props = {
   listings: ListingCard[];
   /** Must match `?lang=` on first paint; then synced from the URL on the client. */
   initialLang?: Lang;
+  /** Same as server `normalizeBrowseCategory(searchParams.category)` for first paint. */
+  initialCategory: string;
   /** From server: `process.env.NODE_ENV === "development"`. */
   isDev?: boolean;
   /** From server: dev + `SHOW_PENDING_SERVICES=true` — browse already includes unverified services. */
@@ -24,18 +26,24 @@ type Props = {
 export default function ListingGrid({
   listings,
   initialLang = DEFAULT_LANG,
+  initialCategory,
   isDev = false,
   devPendingServicesEnabled = false,
 }: Props) {
   const params = useSearchParams();
   const [lang, setLang] = useState<Lang>(initialLang);
+  const [categorySlug, setCategorySlug] = useState(() => normalizeBrowseCategory(initialCategory));
 
   useEffect(() => {
     setLang(langFromParam(params.get("lang")));
   }, [params]);
 
+  useEffect(() => {
+    setCategorySlug(normalizeBrowseCategory(params.get("category")));
+  }, [params]);
+
   if (!listings.length) {
-    const category = normalizeBrowseCategory(params.get("category"));
+    const category = categorySlug;
     const isServiceVertical = isServiceVerticalCategory(category);
 
     const hasColonia = Boolean(params.get("colonia"));
@@ -164,14 +172,14 @@ export default function ListingGrid({
     );
   }
 
-  const negotiableHint = lang === "en" ? "· negotiable" : "· negociable";
+  const negotiableHint = lang === "es" ? "· negociable" : "· negotiable";
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
       {listings.map((listing) => (
         <Link
           key={listing.id}
-          href={lang === "es" ? `/listing/${listing.id}?lang=es` : `/listing/${listing.id}`}
+          href={listingHref(listing.id, lang)}
           className="group block"
         >
           <div className="bg-white rounded-2xl overflow-hidden border border-[#E5E0D8] hover:shadow-lg hover:-translate-y-1 transition-all duration-200">

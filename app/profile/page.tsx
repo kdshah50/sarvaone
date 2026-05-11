@@ -6,7 +6,7 @@ import LoyaltyCard from "@/components/LoyaltyCard";
 import ReferralCard from "@/components/ReferralCard";
 import RoutineHabitsCard from "@/components/RoutineHabitsCard";
 import SellerStripePayoutCard from "@/components/SellerStripePayoutCard";
-import { LANG_STORAGE_KEY, readStoredLang, type Lang } from "@/lib/i18n-lang";
+import { listingHref, readStoredLang, writeStoredLang, type Lang } from "@/lib/i18n-lang";
 import { listingTitle } from "@/lib/listing-language";
 import { formatUsdCents } from "@/lib/money";
 import { formatEinDisplay } from "@/lib/nj-provider-ids";
@@ -37,6 +37,8 @@ type Listing = {
   id: string;
   title_es: string;
   title_en?: string | null;
+  title_hi?: string | null;
+  title_gu?: string | null;
   price_mxn: number;
   status: string;
   is_verified: boolean;
@@ -75,6 +77,8 @@ export default function ProfilePage() {
       listing_id: string;
       title_es: string;
       title_en?: string | null;
+      title_hi?: string | null;
+      title_gu?: string | null;
       price_mxn: number;
       location_city: string | null;
     }[]
@@ -95,8 +99,7 @@ export default function ProfilePage() {
       .catch(() => {});
   }, [user]);
 
-  const t = {
-    es: {
+  const tEs = {
       myProfile:      "Mi perfil",
       memberSince:    "Miembro desde",
       phone:          "Teléfono",
@@ -119,8 +122,8 @@ export default function ProfilePage() {
       communityCta:   "Elegir comunidad",
       communityMarket: "Comunidad del mercado",
       communityChange: "Cambiar comunidad",
-    },
-    en: {
+    };
+  const tEn = {
       myProfile:      "My profile",
       memberSince:    "Member since",
       phone:          "Phone",
@@ -143,8 +146,8 @@ export default function ProfilePage() {
       communityCta:   "Choose community lane",
       communityMarket: "Market community",
       communityChange: "Change community",
-    },
-  }[lang];
+    };
+  const t = lang === "es" ? tEs : tEn;
 
   useEffect(() => {
     fetch("/api/auth/me", { credentials: "same-origin" })
@@ -237,14 +240,14 @@ export default function ProfilePage() {
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <Link href="/" className="text-sm text-[#6B7280] hover:text-[#1B4332] transition-colors">← {lang === "es" ? "Inicio" : "Home"}</Link>
-          <div className="flex bg-[#F4F0EB] rounded-lg p-1 gap-1">
-            {(["en", "es"] as const).map(l => (
+          <div className="flex bg-[#F4F0EB] rounded-lg p-1 gap-0.5 flex-wrap justify-end">
+            {(["en", "es", "hi", "gu"] as const).map((l) => (
               <button key={l} onClick={() => {
                 setLang(l);
-                try { localStorage.setItem(LANG_STORAGE_KEY, l); } catch { /* ignore */ }
+                writeStoredLang(l);
               }}
-                className={`px-3 py-1 rounded-md text-xs font-bold transition-all ${lang === l ? "bg-white text-[#1B4332] shadow-sm" : "text-[#6B7280]"}`}>
-                {l.toUpperCase()}
+                className={`px-2 py-1 rounded-md text-[10px] sm:text-xs font-bold transition-all ${lang === l ? "bg-white text-[#1B4332] shadow-sm" : "text-[#6B7280]"}`}>
+                {l === "hi" ? "हि" : l === "gu" ? "ગુ" : l.toUpperCase()}
               </button>
             ))}
           </div>
@@ -509,7 +512,7 @@ export default function ProfilePage() {
               {favorites.map((f) => (
                 <li key={f.listing_id}>
                   <Link
-                    href={`/listing/${f.listing_id}`}
+                    href={listingHref(f.listing_id, lang)}
                     className="block p-3 rounded-xl bg-[#F4F0EB] hover:bg-[#EDE8E0] transition-colors"
                   >
                     <p className="text-sm font-semibold text-[#1C1917] truncate">{listingTitle(f, lang)}</p>

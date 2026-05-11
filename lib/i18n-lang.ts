@@ -1,6 +1,6 @@
-export type Lang = "en" | "es";
+export type Lang = "en" | "es" | "hi" | "gu";
 
-/** US-first product: English is default; use `?lang=es` or the header toggle for Spanish. */
+/** US-first: English default; ES in UI; HI/GU for listing copy + category labels when provided. */
 export const DEFAULT_LANG: Lang = "en";
 
 /** Browser persistence for language preference (profile, bookings, etc.). */
@@ -14,9 +14,11 @@ const LEGACY_LANG_KEYS = ["aisarvanna_lang", "aisarvana_lang", "naranjo_lang"] a
  * Resolve language from `?lang=` query. Unknown or missing → English.
  */
 export function langFromParam(raw: string | null | undefined): Lang {
-  const v = raw?.trim();
+  const v = raw?.trim()?.toLowerCase();
   if (v === "es") return "es";
   if (v === "en") return "en";
+  if (v === "hi") return "hi";
+  if (v === "gu") return "gu";
   return DEFAULT_LANG;
 }
 
@@ -26,7 +28,7 @@ export function readStoredLang(): Lang | null {
   try {
     for (const k of [LANG_STORAGE_KEY, ...LEGACY_LANG_KEYS]) {
       const v = localStorage.getItem(k);
-      if (v === "en" || v === "es") return v;
+      if (v === "en" || v === "es" || v === "hi" || v === "gu") return v;
     }
   } catch {
     /* ignore */
@@ -40,6 +42,12 @@ export function writeStoredLang(lang: Lang): void {
   } catch {
     /* ignore */
   }
+}
+
+/** Listing detail URL preserving UI language (omit default English). */
+export function listingHref(listingId: string, lang: Lang = DEFAULT_LANG): string {
+  if (lang === DEFAULT_LANG) return `/listing/${listingId}`;
+  return `/listing/${listingId}?lang=${encodeURIComponent(lang)}`;
 }
 
 /** @deprecated use readStoredLang() — kept for imports that only need the key name */

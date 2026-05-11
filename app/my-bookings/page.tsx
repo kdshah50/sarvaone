@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import GuaranteeBadge from "@/components/GuaranteeBadge";
 import RoutineHabitsCard from "@/components/RoutineHabitsCard";
-import { LANG_STORAGE_KEY, readStoredLang, type Lang } from "@/lib/i18n-lang";
+import { readStoredLang, writeStoredLang, type Lang } from "@/lib/i18n-lang";
 import { formatUsdCents } from "@/lib/money";
 
 type Booking = {
@@ -35,25 +35,25 @@ type ReminderRow = {
   listing_title?: string | null;
 };
 
-function timeAgo(dateStr: string, lang: "es" | "en"): string {
+function timeAgo(dateStr: string, lang: Lang): string {
   const diff = Date.now() - new Date(dateStr).getTime();
   const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-  if (lang === "en") {
-    if (days < 1) return "Today";
-    if (days === 1) return "Yesterday";
-    if (days < 30) return `${days} days ago`;
+  if (lang === "es") {
+    if (days < 1) return "Hoy";
+    if (days === 1) return "Ayer";
+    if (days < 30) return `Hace ${days} días`;
     const months = Math.floor(days / 30);
-    if (months === 1) return "1 month ago";
-    if (months < 12) return `${months} months ago`;
-    return "Over a year ago";
+    if (months === 1) return "Hace 1 mes";
+    if (months < 12) return `Hace ${months} meses`;
+    return `Hace más de 1 año`;
   }
-  if (days < 1) return "Hoy";
-  if (days === 1) return "Ayer";
-  if (days < 30) return `Hace ${days} días`;
+  if (days < 1) return "Today";
+  if (days === 1) return "Yesterday";
+  if (days < 30) return `${days} days ago`;
   const months = Math.floor(days / 30);
-  if (months === 1) return "Hace 1 mes";
-  if (months < 12) return `Hace ${months} meses`;
-  return `Hace más de 1 año`;
+  if (months === 1) return "1 month ago";
+  if (months < 12) return `${months} months ago`;
+  return "Over a year ago";
 }
 
 function ReviewBlock({
@@ -62,7 +62,7 @@ function ReviewBlock({
   onDone,
 }: {
   booking: Booking;
-  lang: "es" | "en";
+  lang: Lang;
   onDone: () => void;
 }) {
   const [rating, setRating] = useState(0);
@@ -77,11 +77,23 @@ function ReviewBlock({
           placeholder: "Comentario opcional",
           submit: "Enviar reseña",
         }
-      : {
-          title: "Rate this service",
-          placeholder: "Optional comment",
-          submit: "Submit review",
-        };
+      : lang === "hi"
+        ? {
+            title: "इस सेवा को रेट करें",
+            placeholder: "वैकल्पिक टिप्पणी",
+            submit: "समीक्षा भेजें",
+          }
+        : lang === "gu"
+          ? {
+              title: "આ સેવાને રેટ કરો",
+              placeholder: "વૈકલ્પિક ટિપ્પણી",
+              submit: "રિવ્યૂ મોકલો",
+            }
+          : {
+              title: "Rate this service",
+              placeholder: "Optional comment",
+              submit: "Submit review",
+            };
 
   const submit = async () => {
     if (rating < 1 || rating > 5) return;
@@ -375,24 +387,20 @@ export default function MyBookingsPage() {
           <Link href="/profile" className="text-sm text-[#6B7280] hover:text-[#1B4332] transition-colors">
             {t.back}
           </Link>
-          <div className="flex bg-[#F4F0EB] rounded-lg p-1 gap-1">
-            {(["en", "es"] as const).map((l) => (
+          <div className="flex bg-[#F4F0EB] rounded-lg p-1 gap-0.5 flex-wrap justify-end">
+            {(["en", "es", "hi", "gu"] as const).map((l) => (
               <button
                 key={l}
                 type="button"
                 onClick={() => {
                   setLang(l);
-                  try {
-                    localStorage.setItem(LANG_STORAGE_KEY, l);
-                  } catch {
-                    /* ignore */
-                  }
+                  writeStoredLang(l);
                 }}
-                className={`px-3 py-1 rounded-md text-xs font-bold transition-all ${
+                className={`px-2 py-1 rounded-md text-[10px] sm:text-xs font-bold transition-all ${
                   lang === l ? "bg-white text-[#1B4332] shadow-sm" : "text-[#6B7280]"
                 }`}
               >
-                {l.toUpperCase()}
+                {l === "hi" ? "हि" : l === "gu" ? "ગુ" : l.toUpperCase()}
               </button>
             ))}
           </div>
@@ -459,7 +467,7 @@ export default function MyBookingsPage() {
                         >
                           <span className="text-[#065F46]">
                             {r.reminder_kind === "appointment" ? t.pendingAppt : t.pendingRebook}:{" "}
-                            {new Date(r.remind_at).toLocaleString(lang === "es" ? "es-MX" : "en-MX", {
+                            {new Date(r.remind_at).toLocaleString(lang === "es" ? "es-US" : "en-US", {
                               dateStyle: "short",
                               timeStyle: "short",
                             })}

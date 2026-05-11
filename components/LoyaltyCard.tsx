@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import type { Lang } from "@/lib/i18n-lang";
 
 type Tx = {
   id: string;
@@ -26,7 +27,7 @@ type LoyaltyData = {
   transactions?: Tx[];
 };
 
-export default function LoyaltyCard({ lang = "en" }: { lang?: "es" | "en" }) {
+export default function LoyaltyCard({ lang = "en" }: { lang?: Lang }) {
   const [data, setData] = useState<LoyaltyData | null>(null);
 
   useEffect(() => {

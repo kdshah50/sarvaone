@@ -41,6 +41,7 @@ export async function fetchListingMetaRow(
 ): Promise<Record<string, unknown> | null> {
   const id = encodeURIComponent(listingId);
   const selects = [
+    "title_es,title_en,title_hi,title_gu,description_es,description_en,description_hi,description_gu,photo_urls,price_mxn",
     "title_es,title_en,description_es,description_en,photo_urls,price_mxn",
     "title_es,description_es,photo_urls,price_mxn",
   ];

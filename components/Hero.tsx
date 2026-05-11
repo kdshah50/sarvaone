@@ -40,6 +40,36 @@ const T = {
     priceMax: "Max.",
     noMax: "No max",
   },
+  hi: {
+    badge: "संयुक्त राज्य अमेरिका • सेवाएँ",
+    line1: "eCommerce",
+    line2: "विश्वास के साथ",
+    sub: "संयुक्त राज्य अमेरिका भर में सत्यापित स्थानीय सेवाएँ।",
+    placeholder:
+      "उदा. शनिवार घर की सफ़ाई $120 से कम, या ZIP 08854 के पास प्लम्बर...",
+    btn: "खोजें",
+    near: "मेरे पास",
+    chipLabel: "काउंटी से खोजें:",
+    priceTitle: "मूल्य (USD)",
+    priceMin: "न्यून.",
+    priceMax: "अधिकतम",
+    noMax: "कोई अधिकतम नहीं",
+  },
+  gu: {
+    badge: "યુનાઇટેડ સ્ટેટ્સ • સેવાઓ",
+    line1: "eCommerce",
+    line2: "વિશ્વાસ સાથે",
+    sub: "સંયુક્ત રાજ્ય અમેરિકામાં ચકાસાયેલ સ્થાનિક સેવાઓ.",
+    placeholder:
+      "દા.ત. શનિવારે ઘર સફાઈ $120 થી ઓછી, અથવા ZIP 08854 નજીક પ્લમ્બર...",
+    btn: "શોધો",
+    near: "મારી નજીક",
+    chipLabel: "કાઉન્ટી પ્રમાણે શોધો:",
+    priceTitle: "કિંમત (USD)",
+    priceMin: "ન્યૂન.",
+    priceMax: "મહત્તમ",
+    noMax: "મહત્તમ નહીં",
+  },
 };
 
 function HeroInner({ initialQuery }: { initialQuery: string }) {

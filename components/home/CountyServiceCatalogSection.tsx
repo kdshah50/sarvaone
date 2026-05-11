@@ -22,15 +22,35 @@ function chipHref(
     colonia: countyKey,
     q,
   });
-  if (lang === "es") p.set("lang", "es");
+  if (lang !== "en") p.set("lang", lang);
   return `/?${p.toString()}`;
 }
 
-const TAG_HINT: Record<string, { en: string; es: string }> = {
-  recurring: { en: "Repeat service", es: "Servicio recurrente" },
-  high_ticket: { en: "High-trust", es: "Alto valor" },
-  trust: { en: "Verified quality", es: "Calidad verificada" },
-  ai_concierge: { en: "AI booking fit", es: "Ideal para IA / reservas" },
+const TAG_HINT: Record<string, Record<Lang, string>> = {
+  recurring: {
+    en: "Repeat service",
+    es: "Servicio recurrente",
+    hi: "बार-बार सेवा",
+    gu: "પુનરાવર્તિત સેવા",
+  },
+  high_ticket: {
+    en: "High-trust",
+    es: "Alto valor",
+    hi: "उच्च भरोसा",
+    gu: "ઉચ્ચ વિશ્વાસ",
+  },
+  trust: {
+    en: "Verified quality",
+    es: "Calidad verificada",
+    hi: "सत्यापित गुणवत्ता",
+    gu: "ચકાસાયેલ ગુણવત્તા",
+  },
+  ai_concierge: {
+    en: "AI booking fit",
+    es: "Ideal para IA / reservas",
+    hi: "AI बुकिंग के अनुकूल",
+    gu: "AI બુકિંગ અનુકૂળ",
+  },
 };
 
 export function CountyServiceCatalogSection({
@@ -48,11 +68,19 @@ export function CountyServiceCatalogSection({
   const title =
     lang === "en"
       ? `Service focus in ${countyName}`
-      : `Enfoque de servicios en ${countyName}`;
+      : lang === "es"
+        ? `Enfoque de servicios en ${countyName}`
+        : lang === "hi"
+          ? `${countyName} में सेवा फोकस`
+          : `${countyName} માં સેવા ધ્યાન`;
   const intro =
     lang === "en"
       ? "Curated categories we’re prioritizing for verified providers and AI-assisted booking — tap to run a search."
-      : "Categorías priorizadas para proveedores verificados y reservas asistidas por IA — toca para buscar.";
+      : lang === "es"
+        ? "Categorías priorizadas para proveedores verificados y reservas asistidas por IA — toca para buscar."
+        : lang === "hi"
+          ? "हम सत्यापित प्रदाताओं और AI सहायित बुकिंग के लिए इन श्रेणियों पर जोर दे रहे हैं — खोज चलाने के लिए टैप करें।"
+          : "ચકાસાયેલ પ્રદાતાઓ અને AI-સહાયિત બુકિંગ માટે અમે આ શ્રેણીઓને પ્રાથમિકતા આપીએ છીએ — શોધ ચલાવવા ટૅપ કરો.";
 
   return (
     <div className="mb-8 rounded-2xl border border-[#E5E0D8] bg-white/90 px-4 py-4 shadow-sm">
@@ -60,11 +88,11 @@ export function CountyServiceCatalogSection({
       <p className="text-xs text-[#6B7280] mt-1 mb-3 max-w-3xl">{intro}</p>
       <ul className="flex flex-wrap gap-2">
         {items.map((row) => {
-          const label = lang === "en" ? row.label_en : row.label_es;
-          const blurb = lang === "en" ? row.blurb_en : row.blurb_es;
+          const label = lang === "es" ? row.label_es : row.label_en;
+          const blurb = lang === "es" ? row.blurb_es : row.blurb_en;
           const tag = row.strategy_tag?.trim();
-          const tagL =
-            tag && TAG_HINT[tag] ? TAG_HINT[tag][lang] : null;
+          const rowHint = tag ? TAG_HINT[tag] : null;
+          const tagL = rowHint ? rowHint[lang] : null;
           return (
             <li key={row.service_slug}>
               <Link

@@ -121,7 +121,7 @@ export default async function ListingPage({
         </div>
         <div className="flex items-start justify-between gap-3 mb-4">
           <h1 className="text-xl font-semibold text-[#1C1917] flex-1 min-w-0">{displayTitle}</h1>
-          <FavoriteButton listingId={params.id} />
+          <FavoriteButton listingId={params.id} lang={listingLang} />
         </div>
         {isServiceListing && listing.package_session_count >= 2 && listing.package_total_price_mxn > 0 && (
           <div className="mb-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-950">

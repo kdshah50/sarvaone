@@ -1,8 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-
-type Lang = "es" | "en";
+import type { Lang } from "@/lib/i18n-lang";
 
 export default function ReferralCard({ lang = "en" }: { lang?: Lang }) {
   const [link, setLink] = useState<string | null>(null);
@@ -30,13 +29,29 @@ export default function ReferralCard({ lang = "en" }: { lang?: Lang }) {
           copy: "Copiar enlace",
           copied: "Copiado",
         }
-      : {
-          title: "Refer and earn",
-          body: (n: number) =>
-            `Share your link. When a friend completes their first paid booking, you get ${n} points on the platform.`,
-          copy: "Copy link",
-          copied: "Copied",
-        };
+      : lang === "hi"
+        ? {
+            title: "आमंत्रित करें और कमाएँ",
+            body: (n: number) =>
+              `लिंक साझा करें। जब कोई मित्र पहली भुगतान योग्य बुकिंग पूरी करे, आपको प्लेटफॉर्म पर ${n} अंक मिलते हैं।`,
+            copy: "लिंक कॉपी करें",
+            copied: "कॉपी हो गया",
+          }
+        : lang === "gu"
+          ? {
+              title: "આમંત્રિત કરો અને કમાઓ",
+              body: (n: number) =>
+                `તમારી લિંક શેર કરો. જ્યારે મિત્ર પહેલી ચૂકવણી યોગ્ય બુકિંગ પૂર્ણ કરે, તમને પ્લેટફોર્મ પર ${n} પૉઇન્ટ મળે છે.`,
+              copy: "લિંક કૉપિ કરો",
+              copied: "કૉપિ થયું",
+            }
+          : {
+              title: "Refer and earn",
+              body: (n: number) =>
+                `Share your link. When a friend completes their first paid booking, you get ${n} points on the platform.`,
+              copy: "Copy link",
+              copied: "Copied",
+            };
 
   const copy = () => {
     if (!link) return;

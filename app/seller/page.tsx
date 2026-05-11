@@ -3,7 +3,7 @@ import Link from "next/link";
 import { getServiceRoleRestHeaders, getSupabaseUrl } from "@/lib/service-rest";
 import Image from "next/image";
 import type { Metadata } from "next";
-import { langFromParam } from "@/lib/i18n-lang";
+import { langFromParam, listingHref } from "@/lib/i18n-lang";
 import { listingTitle } from "@/lib/listing-language";
 import { formatUsdCents } from "@/lib/money";
 
@@ -163,7 +163,7 @@ export default async function SellerPage({
           ) : (
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
               {safeListings.map((listing: any) => (
-                <Link key={listing.id} href={lang === "es" ? `/listing/${listing.id}?lang=es` : `/listing/${listing.id}`} className="group">
+                <Link key={listing.id} href={listingHref(listing.id, lang)} className="group">
                   <div className="bg-white rounded-2xl overflow-hidden border border-[#E5E0D8] hover:shadow-lg hover:-translate-y-1 transition-all duration-200">
                     {/* Image */}
                     <div className="relative aspect-[4/3] bg-[#F4F0EB]">

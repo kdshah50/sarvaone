@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-type Lang = "es" | "en";
+import type { Lang } from "@/lib/i18n-lang";
 
 export default function FavoriteButton({ listingId, lang = "en" }: { listingId: string; lang?: Lang }) {
   const [favorited, setFavorited] = useState<boolean | null>(null);
@@ -10,7 +10,11 @@ export default function FavoriteButton({ listingId, lang = "en" }: { listingId: 
   const t =
     lang === "es"
       ? { add: "Guardar", remove: "Guardado" }
-      : { add: "Save", remove: "Saved" };
+      : lang === "hi"
+        ? { add: "सहेजें", remove: "सहेजा गया" }
+        : lang === "gu"
+          ? { add: "સાચવો", remove: "સાચવ્યું" }
+          : { add: "Save", remove: "Saved" };
 
   useEffect(() => {
     fetch(`/api/favorites?listingId=${encodeURIComponent(listingId)}`, { credentials: "same-origin" })

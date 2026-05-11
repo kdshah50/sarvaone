@@ -1,3 +1,5 @@
+import type { Lang } from "@/lib/i18n-lang";
+
 export interface ColoniaInfo {
   lat: number;
   lng: number;
@@ -168,10 +170,11 @@ export const COLONIA_KEYS = Object.keys(COLONIAS).filter((k) => k !== "otro");
 
 export const ALL_COLONIA_KEYS = Object.keys(COLONIAS);
 
-export function coloniaLabel(key: string, lang: "es" | "en" = "en"): string {
+export function coloniaLabel(key: string, lang: Lang = "en"): string {
   const c = COLONIAS[key];
   if (!c) return key;
-  return lang === "en" ? c.label_en : c.label;
+  if (lang === "es") return c.label;
+  return c.label_en;
 }
 
 function normalize(s: string): string {
@@ -226,14 +229,14 @@ export function nearestColonia(
   lat: number,
   lng: number,
   maxKm = COLONIA_RADIUS_KM,
-  lang: "en" | "es" = "en",
+  lang: Lang = "en",
 ): { key: string; label: string; distKm: number } | null {
   let best: { key: string; label: string; distKm: number } | null = null;
   for (const [key, info] of Object.entries(COLONIAS)) {
     if (key === "otro") continue;
     const d = haversineKm(lat, lng, info.lat, info.lng);
     if (d <= maxKm && (!best || d < best.distKm)) {
-      const label = lang === "en" ? info.label_en : info.label;
+      const label = lang === "es" ? info.label : info.label_en;
       best = { key, label, distKm: Math.round(d * 10) / 10 };
     }
   }

@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import { DevHomeAlerts } from "@/components/dev/DevHomeAlerts";
 import ListingBrowseSection from "@/components/listings/ListingBrowseSection";
 import Hero from "@/components/Hero";
 import CategoryBar from "@/components/CategoryBar";
@@ -187,7 +188,7 @@ export default async function HomePage({ searchParams }: Props) {
         `&order=created_at.desc&limit=48` +
         priceQs;
       const colsBase =
-        "id,title_es,title_en,price_mxn,category_id,condition,is_verified,location_city,location_lat,location_lng,shipping_available,negotiable,photo_urls,payment_methods";
+        "id,title_es,title_en,title_hi,title_gu,price_mxn,category_id,condition,is_verified,location_city,location_lat,location_lng,shipping_available,negotiable,photo_urls,payment_methods";
       const colsEmbed =
         colsBase +
         ",users!fk_listings_seller(display_name,trust_badge,dl_verified,ein_verified,ine_verified,rfc_verified,phone_verified)";
@@ -278,25 +279,7 @@ export default async function HomePage({ searchParams }: Props) {
     <main className="min-h-screen bg-[#FDF8F1]">
       <CategoryBar />
       <Hero initialQuery={query} />
-      {devMissingSupabase && (
-        <div className="max-w-5xl mx-auto px-4 pt-4">
-          <div className="rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-950">
-            <strong>Local setup:</strong> Add <code className="text-xs">.env.local</code> with{" "}
-            <code className="text-xs">NEXT_PUBLIC_SUPABASE_URL</code> and{" "}
-            <code className="text-xs">SUPABASE_SERVICE_ROLE_KEY</code> (see <code className="text-xs">.env.example</code>
-            ). Then run <code className="text-xs">npm run dev</code> — not <code className="text-xs">npm dev</code>.
-          </div>
-        </div>
-      )}
-      {devPendingServices && (
-        <div className="max-w-5xl mx-auto px-4 pt-4">
-          <div className="rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-950">
-            <strong>Dev only:</strong> <code className="text-xs">SHOW_PENDING_SERVICES=true</code> — listings in{" "}
-            <strong>service</strong> categories (Beauty, Childcare, Tutoring, etc.) may include <em>unverified</em> rows.
-            Production still requires admin verification.
-          </div>
-        </div>
-      )}
+      <DevHomeAlerts missingSupabase={devMissingSupabase} pendingServices={devPendingServices} />
       <section className="max-w-5xl mx-auto px-4 py-10">
         <Suspense
           fallback={
@@ -317,14 +300,21 @@ export default async function HomePage({ searchParams }: Props) {
             coloniaFilterRelaxed={coloniaFilterRelaxed}
           />
         </Suspense>
-        <ListingBrowseSection
-          listings={cards}
-          initialLang={initialLang}
-          mapCenterLat={refLat}
-          mapCenterLng={refLng}
-          isDev={process.env.NODE_ENV === "development"}
-          devPendingServicesEnabled={devPendingServices}
-        />
+        <Suspense
+          fallback={
+            <div className="h-[28rem] max-w-5xl rounded-2xl bg-[#F4F0EB] animate-pulse mb-6" aria-hidden />
+          }
+        >
+          <ListingBrowseSection
+            listings={cards}
+            initialLang={initialLang}
+            initialCategory={categorySlug}
+            mapCenterLat={refLat}
+            mapCenterLng={refLng}
+            isDev={process.env.NODE_ENV === "development"}
+            devPendingServicesEnabled={devPendingServices}
+          />
+        </Suspense>
       </section>
       <TrustBar />
     </main>

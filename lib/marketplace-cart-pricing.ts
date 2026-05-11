@@ -22,11 +22,14 @@ export type CartPricingBreakdown = {
   vatPercent: number;
 };
 
-/** IVA / VAT shown on checkout (Mexico default 16). Override with MARKETPLACE_VAT_PERCENT. */
+/**
+ * Sales tax / VAT on cart (subtotal + commission). US-first default **0** (set explicit NJ/other % in env).
+ * Legacy Mexico: set `MARKETPLACE_VAT_PERCENT=16`.
+ */
 export function getMarketplaceVatPercent(): number {
-  const raw = process.env.MARKETPLACE_VAT_PERCENT ?? process.env.MARKETPLACE_VAT_PCT ?? "16";
+  const raw = process.env.MARKETPLACE_VAT_PERCENT ?? process.env.MARKETPLACE_VAT_PCT ?? "0";
   const n = parseFloat(String(raw));
-  if (!Number.isFinite(n) || n < 0 || n > 30) return 16;
+  if (!Number.isFinite(n) || n < 0 || n > 30) return 0;
   return n;
 }
 

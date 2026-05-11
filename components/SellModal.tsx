@@ -38,7 +38,7 @@ export default function SellModal({ onClose }: { onClose: () => void }) {
   const [titleGu, setTitleGu] = useState("");
   const [descHi, setDescHi] = useState("");
   const [descGu, setDescGu] = useState("");
-  const [city, setCity] = useState("CDMX");
+  const [city, setCity] = useState("Edison");
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
   const [error, setError] = useState("");
@@ -146,7 +146,7 @@ export default function SellModal({ onClose }: { onClose: () => void }) {
             category: isServiceVerticalCategory(categoryHint) ? "services" : categoryHint,
             condition: "good",
             title: title.trim() || "artículo",
-            location_state: "CDMX",
+            location_state: "New Jersey",
           }),
         });
         if (res.ok) {
@@ -214,7 +214,8 @@ export default function SellModal({ onClose }: { onClose: () => void }) {
           condition: "good",
           status: "active",
           location_city: city,
-          location_state: "CDMX",
+          location_state: "New Jersey",
+          zip_code: "08854",
           shipping_available: false,
           negotiable: true,
           photo_urls: photoUrls,
@@ -515,16 +516,16 @@ export default function SellModal({ onClose }: { onClose: () => void }) {
         {/* ── STEP 3: Reach + publish ───────────────────────────────────────── */}
         {step === 3 && (
           <div>
-            <h2 className="font-serif text-xl font-bold mb-1">Alcance y publicación</h2>
-            <p className="text-sm text-[#6B7280] mb-5">Elige dónde mostrar tu anuncio.</p>
+            <h2 className="font-serif text-xl font-bold mb-1">Reach &amp; publish</h2>
+            <p className="text-sm text-[#6B7280] mb-5">Listings show across New Jersey — pick a primary town for your pin.</p>
 
-            {/* City selector */}
+            {/* Primary area (New Jersey) */}
             <div className="space-y-2 mb-5">
               {[
-                { city: "CDMX", buyers: "8.2M compradores" },
-                { city: "Guadalajara", buyers: "1.8M compradores" },
-                { city: "Monterrey", buyers: "1.4M compradores" },
-                { city: "Puebla", buyers: "800K compradores" },
+                { city: "Edison", buyers: "Middlesex County" },
+                { city: "Newark", buyers: "Essex County" },
+                { city: "Jersey City", buyers: "Hudson County" },
+                { city: "Trenton", buyers: "Mercer County" },
               ].map(({ city: c, buyers }) => (
                 <div
                   key={c}
@@ -538,7 +539,7 @@ export default function SellModal({ onClose }: { onClose: () => void }) {
                   </div>
                   <div>
                     <span className="font-medium text-sm">{c}</span>
-                    <span className="text-xs text-[#6B7280] ml-2">{buyers}</span>
+                    <span className="text-xs text-[#6B7280] ml-2">{buyers} · NJ</span>
                   </div>
                 </div>
               ))}

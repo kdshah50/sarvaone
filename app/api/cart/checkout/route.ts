@@ -88,46 +88,53 @@ export async function POST(req: NextRequest) {
       ? `${pricing.lines.length} artículo(s) — pago al vendedor vía Stripe Connect`
       : `${pricing.lines.length} artículo(s) — pago a la plataforma (modo sin Connect; reparto al vendedor manual)`;
 
+    const taxName =
+      vatPct > 0 ? `Sales tax (${Number.isInteger(vatPct) ? vatPct : vatPct}%)` : "Tax";
+
+    const lineItems = [
+      {
+        price_data: {
+          currency: "usd",
+          unit_amount: pricing.subtotalCents,
+          product_data: {
+            name: "Items (seller)",
+            description: itemDesc,
+          },
+        },
+        quantity: 1,
+      },
+      {
+        price_data: {
+          currency: "usd",
+          unit_amount: pricing.commissionCents,
+          product_data: {
+            name: "AISaravanna platform fee (commission)",
+            description: "Platform commission per listing (admin-defined)",
+          },
+        },
+        quantity: 1,
+      },
+    ];
+    if (pricing.vatCents > 0) {
+      lineItems.push({
+        price_data: {
+          currency: "usd",
+          unit_amount: pricing.vatCents,
+          product_data: {
+            name: taxName,
+            description: "Tax on subtotal + platform fee (see MARKETPLACE_VAT_PERCENT)",
+          },
+        },
+        quantity: 1,
+      });
+    }
+
     let session;
     try {
       session = await stripe.checkout.sessions.create({
         mode: "payment",
         currency: "usd",
-        line_items: [
-          {
-            price_data: {
-              currency: "usd",
-              unit_amount: pricing.subtotalCents,
-              product_data: {
-                name: "Artículos (vendedor)",
-                description: itemDesc,
-              },
-            },
-            quantity: 1,
-          },
-          {
-            price_data: {
-              currency: "usd",
-              unit_amount: pricing.commissionCents,
-              product_data: {
-                name: "AISaravanna platform fee (commission)",
-                description: "Comisión de plataforma según cada anuncio (definida por admin)",
-              },
-            },
-            quantity: 1,
-          },
-          {
-            price_data: {
-              currency: "usd",
-              unit_amount: pricing.vatCents,
-              product_data: {
-                name: `IVA (${vatPct}%)`,
-                description: "Impuesto sobre subtotal + comisión",
-              },
-            },
-            quantity: 1,
-          },
-        ],
+        line_items: lineItems,
         ...(useConnect && connectId
           ? {
               payment_intent_data: {

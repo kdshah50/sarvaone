@@ -14,10 +14,10 @@ The strategy deck (*AISarvanna Market Strategy*) describes a **two-lane** market
 
 | Deck theme | In repo today (high level) | Gap / next build |
 |------------|----------------------------|------------------|
-| US-first, bilingual | EN default, ES via `?lang=` / toggle (`lib/i18n-lang`, header) | Hindi/Gujarati: extend i18n (deck mentions `next-intl`; repo uses custom `lang` — **pick one approach** and document) |
+| US-first, bilingual | EN default, ES / HI / GU via `?lang=` / toggle | Corridor copy still NJ-centered; expand MD/PA/DE when ready |
 | Corridor (PA/NJ/MD/DE) | NJ counties (`lib/colonias`), US ZIP hints (`lib/us-zip`, geocode) | Full **US neighborhood picker**; browse/search coverage for MD/DE/PA as product requires |
 | WhatsApp OTP | `send-otp` / `verify-otp`, Twilio, `tianguis_token` | Low gap for MVP narrative |
-| Two “community lanes” | **Not first-class** (no lane on `users` / session) | **Lane selector** after auth or first open; persist `community_lane` (or similar); filter categories + copy |
+| Two “community lanes” | Lane on `users`, `CommunityLaneProvider`, header toggle, category filtering | — |
 | Goods marketplace | Listings, cart, Stripe Connect path, `MARKETPLACE_CONNECT_REQUIRED` | Align internal wording: “escrow” vs actual **checkout + Connect / platform** behavior |
 | Services + providers | `/unete`, admin approval, services vertical, booking + commission (`ServiceBookingBlock`, `service_bookings`) | South Asian **taxonomy**; richer **provider profile** (portfolio, availability) per roadmap |
 | Trust / verification | Admin PIN; listing `is_verified`; DL/EIN + legacy flags (`supabase/migrations/20260509130000_nj_provider_dl_ein.sql`); badges UI | **Stripe Identity** if automating; else **admin + DL upload** (`/api/upload-dl`) |

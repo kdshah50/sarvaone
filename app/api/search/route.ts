@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServiceRoleRestHeaders, getSupabaseUrl } from "@/lib/service-rest";
 import { embeddedSellerRow } from "@/lib/seller-trust-display";
-import { COLONIAS, detectColoniaInQuery, COLONIA_RADIUS_KM } from "@/lib/colonias";
-import { detectZipInQuery, normalizeUsZip5 } from "@/lib/us-zip";
-import { geocodeUsZip } from "@/lib/geocode-us-zip";
+import { COLONIAS, COLONIA_RADIUS_KM } from "@/lib/colonias";
+import { normalizeUsZip5 } from "@/lib/us-zip";
+import { inferNjShopperSearchContext } from "@/lib/infer-nj-shopper-search-context";
 import {
   listingMatchesPriceFilters,
   mergeLooseSparseInput,
@@ -193,23 +193,38 @@ export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   let query        = (searchParams.get("q") ?? "").trim();
   const browseCategory = searchParams.get("category") ?? "services";
-  let coloniaKey   = searchParams.get("colonia") ?? "";
+  const coloniaSlugParam = (searchParams.get("colonia") ?? "").trim().toLowerCase();
+  const validatedColoniaChip =
+    coloniaSlugParam && coloniaSlugParam in COLONIAS && coloniaSlugParam !== "otro"
+      ? coloniaSlugParam
+      : "";
   let lat        = parseFloat(searchParams.get("lat") ?? "NaN");
   let lng        = parseFloat(searchParams.get("lng") ?? "NaN");
-  let hasGeo       = !isNaN(lat) && !isNaN(lng);
+  let hasGeo       = Number.isFinite(lat) && Number.isFinite(lng);
   let geoZipApplied: string | null = normalizeUsZip5(searchParams.get("zip"));
   const pminUsd  = parsePesosParam(searchParams.get("pmin"));
   const pmaxUsd  = parsePesosParam(searchParams.get("pmax"));
 
-  if (!coloniaKey && query) {
-    const detected = detectColoniaInQuery(query);
-    if (detected) {
-      coloniaKey = detected.coloniaKey;
-      query = detected.cleanedQuery || query;
-    }
-  }
+  const inferred = await inferNjShopperSearchContext({
+    rawQuery: query,
+    zipParam: searchParams.get("zip"),
+    shopperLat: hasGeo ? lat : null,
+    shopperLng: hasGeo ? lng : null,
+    lockedColoniaSlug: validatedColoniaChip || null,
+  });
 
-  const coloniaRef = coloniaKey ? COLONIAS[coloniaKey] : null;
+  query = inferred.cleanedQuery;
+  if (inferred.shopperLat != null && inferred.shopperLng != null) {
+    lat = inferred.shopperLat;
+    lng = inferred.shopperLng;
+    hasGeo = true;
+  }
+  geoZipApplied = inferred.geoZipApplied ?? geoZipApplied;
+
+  const effectiveColoniaSlug =
+    validatedColoniaChip || inferred.inferredCountySlug;
+  const coloniaRef =
+    effectiveColoniaSlug ? COLONIAS[effectiveColoniaSlug] ?? null : null;
 
   let sparseRows: any[] = [];
   let denseRows:  any[] = [];
@@ -524,10 +539,18 @@ export async function GET(req: NextRequest) {
       pmaxUsd: pmaxUsd ?? null,
       zipUsedForGeo: geoZipApplied ?? null,
     },
+    njLocationInference: {
+      enrichment: inferred.enrichment,
+      inferredCountySlug: inferred.inferredCountySlug || null,
+      validatedColoniaChip: validatedColoniaChip || null,
+      effectiveCountySlug: effectiveColoniaSlug || null,
+    },
   };
 
   return NextResponse.json({
     results, mode, query, total: results.length, debug,
-    colonia: coloniaRef ? { key: coloniaKey, label: coloniaRef.label } : null,
+    colonia: coloniaRef
+      ? { key: effectiveColoniaSlug, label: coloniaRef.label }
+      : null,
   });
 }

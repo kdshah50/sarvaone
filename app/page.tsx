@@ -26,7 +26,30 @@ import { langFromParam } from "@/lib/i18n-lang";
 import { listingTitle } from "@/lib/listing-language";
 import { formatUsdCents } from "@/lib/money";
 
+import { censusCountySlugAtLngLat } from "@/lib/census-county-at-point";
+
 export const dynamic = "force-dynamic";
+
+function normalizeCountySlugParam(slug?: string): string {
+  const k = slug?.trim().toLowerCase() ?? "";
+  if (!k || !(k in COLONIAS) || k === "otro") return "";
+  return k;
+}
+
+async function countyServiceCatalogRowsForKey(
+  countyKey: string,
+): Promise<CountyServiceCatalogRow[]> {
+  if (!countyKey || countyKey === "otro") return [];
+  const supaHeaders = getServiceRoleRestHeaders();
+  const supaUrl = getSupabaseUrl();
+  const catPath =
+    `/rest/v1/county_service_catalog?county_key=eq.${encodeURIComponent(countyKey)}&active=eq.true` +
+    `&select=service_slug,label_en,label_es,blurb_en,blurb_es,strategy_tag&order=sort_order.asc`;
+  const catRes = await fetch(`${supaUrl}${catPath}`, { headers: supaHeaders, cache: "no-store" });
+  if (!catRes.ok) return [];
+  const raw = await catRes.json();
+  return Array.isArray(raw) ? (raw as CountyServiceCatalogRow[]) : [];
+}
 
 /** Default map / fallback coordinates: geographic center of New Jersey */
 const NJ_LAT = 40.0583;
@@ -63,28 +86,38 @@ export default async function HomePage({ searchParams }: Props) {
   const query       = searchParams?.q ?? "";
   const lang        = langFromParam(searchParams?.lang);
   const initialLang = lang;
-  const coloniaKey  = searchParams?.colonia ?? "";
+  const validatedCountySlug = normalizeCountySlugParam(searchParams?.colonia);
   const pminUsd     = parseWholeUsd(searchParams?.pmin);
   const pmaxUsd     = parseWholeUsd(searchParams?.pmax);
-  let coloniaData   = coloniaKey ? COLONIAS[coloniaKey] : null;
+  let coloniaData   = validatedCountySlug ? COLONIAS[validatedCountySlug] : null;
+  let catalogCountyKey = validatedCountySlug;
   let userLat       = parseFloat(searchParams?.lat ?? "NaN");
   let userLng       = parseFloat(searchParams?.lng ?? "NaN");
-  let hasGeo        = !isNaN(userLat) && !isNaN(userLng);
+  let hasGeo        = Number.isFinite(userLat) && Number.isFinite(userLng);
   let fetchQuery    = query;
 
-  if (!hasGeo) {
-    const zipGuess = normalizeUsZip5(searchParams?.zip ?? "") ?? detectZipInQuery(fetchQuery)?.zip;
-    if (zipGuess) {
-      const hit = await geocodeUsZip(zipGuess);
-      if (hit) {
-        userLat = hit.lat;
-        userLng = hit.lng;
-        hasGeo = true;
-      }
-      if (!normalizeUsZip5(searchParams?.zip ?? "")) {
-        const fromText = detectZipInQuery(fetchQuery);
-        if (fromText?.zip === zipGuess) fetchQuery = fromText.cleanedQuery.trim();
-      }
+  const zipGuessEarly =
+    normalizeUsZip5(searchParams?.zip ?? "") ?? detectZipInQuery(fetchQuery)?.zip ?? null;
+
+  let zipCentroidHit: Awaited<ReturnType<typeof geocodeUsZip>> = null;
+  if (zipGuessEarly) {
+    zipCentroidHit = await geocodeUsZip(zipGuessEarly);
+    if (!hasGeo && zipCentroidHit) {
+      userLat = zipCentroidHit.lat;
+      userLng = zipCentroidHit.lng;
+      hasGeo = true;
+    }
+    if (!normalizeUsZip5(searchParams?.zip ?? "")) {
+      const fromText = detectZipInQuery(fetchQuery);
+      if (fromText?.zip === zipGuessEarly) fetchQuery = fromText.cleanedQuery.trim();
+    }
+  }
+
+  if (!validatedCountySlug && zipCentroidHit) {
+    const cen = await censusCountySlugAtLngLat(zipCentroidHit.lng, zipCentroidHit.lat);
+    if (cen?.slug) {
+      if (!coloniaData) coloniaData = COLONIAS[cen.slug] ?? null;
+      if (!catalogCountyKey) catalogCountyKey = cen.slug;
     }
   }
 
@@ -101,19 +134,8 @@ export default async function HomePage({ searchParams }: Props) {
     const supaHeaders = getServiceRoleRestHeaders();
     const supaUrl = getSupabaseUrl();
 
-    if (categorySlug === "services" && coloniaKey && coloniaKey !== "otro") {
-      try {
-        const catPath =
-          `/rest/v1/county_service_catalog?county_key=eq.${encodeURIComponent(coloniaKey)}&active=eq.true` +
-          `&select=service_slug,label_en,label_es,blurb_en,blurb_es,strategy_tag&order=sort_order.asc`;
-        const catRes = await fetch(`${supaUrl}${catPath}`, { headers: supaHeaders, cache: "no-store" });
-        if (catRes.ok) {
-          const raw = await catRes.json();
-          if (Array.isArray(raw)) countyCatalog = raw as CountyServiceCatalogRow[];
-        }
-      } catch {
-        /* catalog is optional until migration is applied */
-      }
+    if (categorySlug === "services" && catalogCountyKey && catalogCountyKey !== "otro") {
+      countyCatalog = await countyServiceCatalogRowsForKey(catalogCountyKey);
     }
 
     if (fetchQuery.trim() || query.trim()) {
@@ -123,7 +145,7 @@ export default async function HomePage({ searchParams }: Props) {
       if (zipForSearchApi) params.set("zip", zipForSearchApi);
 
       if (hasGeo) { params.set("lat", String(userLat)); params.set("lng", String(userLng)); }
-      if (coloniaKey) { params.set("colonia", coloniaKey); }
+      if (validatedCountySlug) { params.set("colonia", validatedCountySlug); }
       if (pminUsd != null && pminUsd > 0) params.set("pmin", String(pminUsd));
       if (pmaxUsd != null && pmaxUsd > 0) params.set("pmax", String(pmaxUsd));
       const res = await fetch(`${getServerFetchOrigin()}/api/search?${params}`, { cache: "no-store" });
@@ -167,8 +189,17 @@ export default async function HomePage({ searchParams }: Props) {
             _mode: row._mode,
           };
         });
-        if (detectedColonia && !coloniaData) {
-          coloniaData = COLONIAS[detectedColonia.key] ?? null;
+        const effSlug =
+          typeof detectedColonia?.key === "string" &&
+          detectedColonia.key in COLONIAS &&
+          detectedColonia.key !== "otro"
+            ? detectedColonia.key
+            : "";
+        coloniaData = coloniaData ?? (effSlug ? COLONIAS[effSlug] ?? null : null);
+
+        if (categorySlug === "services" && effSlug && !validatedCountySlug) {
+          catalogCountyKey = effSlug;
+          countyCatalog = await countyServiceCatalogRowsForKey(effSlug);
         }
       } else {
         const msg = await res.text().catch(() => "");
@@ -278,9 +309,15 @@ export default async function HomePage({ searchParams }: Props) {
             <div className="h-32 mb-6 rounded-xl bg-[#F4F0EB] animate-pulse" aria-hidden />
           }
         >
-          {categorySlug === "services" && coloniaKey && coloniaKey !== "otro" && (
-            <CountyServiceCatalogSection lang={lang} countyKey={coloniaKey} items={countyCatalog} />
-          )}
+          {categorySlug === "services" &&
+            catalogCountyKey &&
+            catalogCountyKey !== "otro" && (
+              <CountyServiceCatalogSection
+                lang={lang}
+                countyKey={catalogCountyKey}
+                items={countyCatalog}
+              />
+            )}
           <HomeListHeading
             initialLang={initialLang}
             initialCategory={categorySlug}

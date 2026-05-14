@@ -1,6 +1,6 @@
 /*
-  Demo: two ACTIVE + VERIFIED service listings per service-vertical category_id
-  (services, beauty, childcare, tutoring, pet_care, fitness, handyman, landscaping).
+  Demo: two ACTIVE + VERIFIED service listings per core service-vertical category_id
+  (services, beauty, childcare, tutoring, coaching_training, pet_care, fitness, handyman, landscaping).
 
   Use for QA: hybrid search (OpenAI embeddings optional), geo sort, county ?colonia=, price sliders.
 
@@ -107,6 +107,23 @@ BEGIN
    'Edison', 'New Jersey', '08837', 40.510, -74.395, TRUE, TRUE,
    '[]'::jsonb, ARRAY['efectivo', 'stripe']::text[], now() + interval '120 days'),
 
+  -- ── Coaching & training ──────────────────────────────────────────────
+  (sid, 'Coaching ejecutivo — sesiones 1:1 Edison (demo svc QA)',
+   'Executive coaching — 1:1 sessions Edison (demo svc QA)',
+   'Coaching liderazgo desarrollo profesional objetivos carrera accountability Edison New Jersey español inglés demo.',
+   'Executive coaching leadership goals accountability Edison QA.',
+   52000, 'coaching_training', 'good', 'active', TRUE,
+   'Edison', 'New Jersey', '08837', 40.519, -74.412, TRUE, TRUE,
+   '[]'::jsonb, ARRAY['stripe']::text[], now() + interval '120 days'),
+
+  (sid, 'Taller habilidades de presentación — grupal (demo svc QA)',
+   'Presentation skills workshop — group demo (QA)',
+   'Training taller comunicación presentaciones público nervousness Middlesex workshops grupo pequeño.',
+   'Presentation skills group workshop Central NJ QA.',
+   35000, 'coaching_training', 'good', 'active', TRUE,
+   'Woodbridge', 'New Jersey', '07095', 40.554, -74.286, TRUE, TRUE,
+   '[]'::jsonb, ARRAY['efectivo', 'stripe']::text[], now() + interval '120 days'),
+
   -- ── Pet care ─────────────────────────────────────────────────────────
   (sid, 'Paseo de perros 30–60 min Mercer (demo svc QA)',
    'Dog walks 30–60 min — Mercer demo (QA)',
@@ -175,7 +192,7 @@ BEGIN
    'Metuchen', 'New Jersey', '08840', 40.538, -74.369, FALSE, TRUE,
    '[]'::jsonb, ARRAY['efectivo', 'paypal']::text[], now() + interval '120 days');
 
-  RAISE NOTICE 'Inserted 16 verified demo service listings linked to seller %', sid;
+  RAISE NOTICE 'Inserted 18 verified demo service listings linked to seller %', sid;
 END $$;
 
 /*

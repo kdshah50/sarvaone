@@ -8,6 +8,7 @@ const SERVICE_VERTICAL_IDS = [
   "beauty",
   "childcare",
   "tutoring",
+  "coaching_training",
   "pet_care",
   "fitness",
   "handyman",

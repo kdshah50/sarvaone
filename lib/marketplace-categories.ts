@@ -54,6 +54,18 @@ export const MARKETPLACE_CATEGORIES: MarketplaceCategory[] = [
     serviceVertical: true,
   },
   {
+    id: "coaching_training",
+    icon: "🎯",
+    label: {
+      es: "Coaching y capacitación",
+      en: "Coaching & training",
+      hi: "कोचिंग और प्रशिक्षण",
+      gu: "કોચિંગ અને તાલીમ",
+    },
+    browseEnabled: true,
+    serviceVertical: true,
+  },
+  {
     id: "pet_care",
     icon: "🐕",
     label: { es: "Mascotas", en: "Pet care", hi: "पालतू देखभाल", gu: "પાલતું પ્રાણી સંભાળ" },

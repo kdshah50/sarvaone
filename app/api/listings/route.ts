@@ -16,6 +16,7 @@ const PRICE_FLOORS: Record<string, number> = {
   beauty:       10000,
   childcare:    10000,
   tutoring:     10000,
+  coaching_training: 10000,
   pet_care:     10000,
   fitness:      10000,
   handyman:     10000,

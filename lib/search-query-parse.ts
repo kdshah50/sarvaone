@@ -150,7 +150,7 @@ type LlmExtract = LlmConciergeFields & {
   extra_sparse_terms?: string[] | null;
   /**
    * ONE browse vertical (service or product) when intent is clearly a single category:
-   * fitness, beauty, tutoring, electronics, vehicles, … — never invent ids beyond marketplace tabs.
+   * fitness, coaching_training, beauty, tutoring, electronics, vehicles, … — never invent ids beyond marketplace tabs.
    */
   listing_category_hint?: string | null;
 };
@@ -194,7 +194,7 @@ Return ONLY valid JSON with keys:
 - max_price_usd: maximum price in whole US dollars (integer), or null if not stated.
 - min_price_usd: minimum price in whole US dollars (integer), or null if not stated.
 - extra_sparse_terms: optional array (max 6) of short EN/ES phrases sellers often use in titles instead of the user's exact words (e.g. "personal yoga trainer" → ["yoga instructor","personal training","clases yoga","entrenador personal"]). Empty array or omit if unnecessary.
-- listing_category_hint: optional single browse category id when intent matches ONE vertical. **Services:** fitness (yoga, trainer, pilates), tutoring, beauty, childcare, pet_care, handyman, landscaping. **Goods:** electronics (phones, laptops), vehicles, fashion, home (furniture), sports, realestate. Use null when unclear or mixed intent; use "services" only for generic local help with no clearer vertical.
+- listing_category_hint: optional single browse category id when intent matches ONE vertical. **Services:** fitness (yoga, trainer, pilates), coaching_training (life coaching, executive coaching, soft-skills training, workshops), tutoring (academic, test prep), beauty, childcare, pet_care, handyman, landscaping. **Goods:** electronics (phones, laptops), vehicles, fashion, home (furniture), sports, realestate. Use null when unclear or mixed intent; use "services" only for generic local help with no clearer vertical.
 - concierge_service_hint: optional staffing-style label ("house cleaning", …), or null — same intent as keyword but for booking.
 - concierge_time_hint: optional short phrase as user said for timing ("this Saturday", "Saturday morning"), or null.
 - preferred_weekday: lowercase monday|tuesday|…|sunday only if a single weekday is clear (e.g. "this Saturday" → saturday), else null.

@@ -53,7 +53,7 @@ Validation lives in `lib/phone.ts` (`isValidAuthPhone`, `normalizeAuthPhone`).
 
 ### Use a separate project from Mexico
 
-AISaravanna should use its **own Supabase project** (empty or migrated schema), not the same `NEXT_PUBLIC_SUPABASE_URL` / keys as the Mexico site. Same stack (Postgres via Supabase), **different database** — no code fork required, only different env vars on Vercel and in `.env.local`. Run the migrations in `supabase/migrations/` only on the AISaravanna project.
+Sarvaone should use its **own Supabase project** (empty or migrated schema), not the same `NEXT_PUBLIC_SUPABASE_URL` / keys as the Mexico site. Same stack (Postgres via Supabase), **different database** — no code fork required, only different env vars on Vercel and in `.env.local`. Run the migrations in `supabase/migrations/` only on the Sarvaone project.
 
 ### Fresh project (no `listings` table yet)
 
@@ -124,7 +124,7 @@ Shared JWT + Supabase admin client helpers live in `lib/auth-server.ts` (also us
 
 Open a specific thread on the listing page: `/listing/{id}?chat={conversationId}`.
 
-## Deploy & CI (Vercel only — AISaravanna)
+## Deploy & CI (Vercel only — Sarvaone)
 
 **This project does not use GitLab CI.** The Next.js app is built and hosted on **Vercel**, connected to **this GitHub repository**. Cron jobs for this app are defined in `vercel.json` (`/api/cron/*`).
 

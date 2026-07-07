@@ -3,9 +3,9 @@ import Link from "next/link";
 import { langFromParam, hrefWithLang, type Lang } from "@/lib/i18n-lang";
 
 export const metadata: Metadata = {
-  title: "FAQ | AISaravanna",
+  title: "FAQ | Sarvaone",
   description:
-    "Frequently asked questions for service providers, buyers, payments, trust, messaging, and safety on AISaravanna.",
+    "Frequently asked questions for service providers, buyers, payments, trust, messaging, and safety on Sarvaone.",
   robots: { index: true, follow: true },
 };
 
@@ -24,7 +24,7 @@ const COPY: Record<"en" | "es", FaqCopy> = {
   en: {
     title: "Frequently asked questions",
     intro:
-      "Quick answers about using AISaravanna as a service provider or client, how payments and verification work, and how we encourage safe, on-platform transactions. For binding rules, see our Terms and Privacy Policy.",
+      "Quick answers about using Sarvaone as a service provider or client, how payments and verification work, and how we encourage safe, on-platform transactions. For binding rules, see our Terms and Privacy Policy.",
     sections: [
       {
         heading: "Service providers (sellers)",
@@ -65,7 +65,7 @@ const COPY: Record<"en" | "es", FaqCopy> = {
         heading: "Payments",
         items: [
           {
-            q: "How do payments work on AISaravanna?",
+            q: "How do payments work on Sarvaone?",
             a: [
               "Many purchases use Stripe (or another processor we configure) at checkout. You see charges, receipts, and status in line with standard card or wallet flows.",
               "Fees, taxes shown at checkout, and seller payouts (including Connect payouts when configured) depend on Stripe settings and your agreement with us—the exact behavior follows what is wired in your deployment.",
@@ -88,7 +88,7 @@ const COPY: Record<"en" | "es", FaqCopy> = {
           {
             q: "Keep communication and commitments on-platform",
             a: [
-              "Use AISaravanna messaging and documented checkout flows so there is an auditable trail for disputes and support.",
+              "Use Sarvaone messaging and documented checkout flows so there is an auditable trail for disputes and support.",
               "Moving the entire negotiation off-platform to avoid fees or oversight increases fraud risk for both sides. Parties who bypass the platform assume extra risk.",
             ],
           },
@@ -107,7 +107,7 @@ const COPY: Record<"en" | "es", FaqCopy> = {
           {
             q: "Reviews, comments, and badges",
             a: [
-              "Where reviews exist, they reflect user-submitted opinions, not AISaravanna’s endorsement.",
+              "Where reviews exist, they reflect user-submitted opinions, not Sarvaone’s endorsement.",
               "We may moderate content that violates our Terms (for example harassment, fake reviews, or illegal activity). Repeated abuse may lead to suspension.",
               "Trust badges summarize signals we can verify in product; treat them alongside reviews and your own judgment.",
             ],
@@ -134,7 +134,7 @@ const COPY: Record<"en" | "es", FaqCopy> = {
           {
             q: "How should messaging be used?",
             a: [
-              "Messaging exists to negotiate and coordinate legitimate buy/sell and service engagements on AISaravanna.",
+              "Messaging exists to negotiate and coordinate legitimate buy/sell and service engagements on Sarvaone.",
               "Do not use it for spam, harassment, solicitation unrelated to a reasonable transaction, or to collect data for unrelated marketing without consent.",
               "Misuse may result in moderation or suspension under our Terms.",
             ],
@@ -148,8 +148,8 @@ const COPY: Record<"en" | "es", FaqCopy> = {
             q: "I found a provider on Instagram or Facebook—where do I book?",
             a: [
               "Facebook and Instagram are great for discovery and social proof; many NJ providers share their work there.",
-              "When you are ready to hire, open their AISaravanna listing or profile link (share it in a group chat or WhatsApp). Quote, deposit, and payment stay in the app.",
-              "WhatsApp and SMS from AISaravanna are alerts and coordination—they deep-link back to your booking, not a substitute for checkout.",
+              "When you are ready to hire, open their Sarvaone listing or profile link (share it in a group chat or WhatsApp). Quote, deposit, and payment stay in the app.",
+              "WhatsApp and SMS from Sarvaone are alerts and coordination—they deep-link back to your booking, not a substitute for checkout.",
             ],
           },
         ],
@@ -163,7 +163,7 @@ const COPY: Record<"en" | "es", FaqCopy> = {
   es: {
     title: "Preguntas frecuentes",
     intro:
-      "Respuestas breves sobre AISaravanna para prestadores de servicios y clientes: pagos, verificación y transacciones seguras en la plataforma. Para reglas vinculantes, consulte Términos y Aviso de privacidad.",
+      "Respuestas breves sobre Sarvaone para prestadores de servicios y clientes: pagos, verificación y transacciones seguras en la plataforma. Para reglas vinculantes, consulte Términos y Aviso de privacidad.",
     sections: [
       {
         heading: "Prestadores de servicios (vendedores)",
@@ -270,7 +270,7 @@ const COPY: Record<"en" | "es", FaqCopy> = {
           {
             q: "Uso esperado del chat",
             a: [
-              "Coordine compraventa y prestación de servicios legítimos relacionados con AISaravanna.",
+              "Coordine compraventa y prestación de servicios legítimos relacionados con Sarvaone.",
               "Sin spam, acoso ni recolección indebida para marketing ajeno.",
               "El uso indebido puede implicar medidas conforme los Términos.",
             ],
@@ -284,8 +284,8 @@ const COPY: Record<"en" | "es", FaqCopy> = {
             q: "Encontré un proveedor en Instagram o Facebook—¿dónde reservo?",
             a: [
               "Facebook e Instagram sirven para descubrir y ver el trabajo del proveedor; muchos en NJ comparten ahí.",
-              "Cuando quieras contratar, abre el enlace de su anuncio o perfil en AISaravanna (compártelo en un grupo o WhatsApp). Cotización, depósito y pago quedan en la app.",
-              "WhatsApp y SMS de AISaravanna son avisos y coordinación—vuelven a tu reserva, no sustituyen el checkout.",
+              "Cuando quieras contratar, abre el enlace de su anuncio o perfil en Sarvaone (compártelo en un grupo o WhatsApp). Cotización, depósito y pago quedan en la app.",
+              "WhatsApp y SMS de Sarvaone son avisos y coordinación—vuelven a tu reserva, no sustituyen el checkout.",
             ],
           },
         ],

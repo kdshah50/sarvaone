@@ -132,7 +132,7 @@ export async function notifySellerBookingCommissionPaid(supabase: SupabaseClient
       : `${appUrl}/seller-bookings`;
 
     const msg = [
-      `🎉 *Pago recibido en AISaravanna*`,
+      `🎉 *Pago recibido en Sarvaone*`,
       ``,
       `Un cliente pagó la tarifa de servicio/contacto por:`,
       `*${listingTitle}*`,

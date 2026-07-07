@@ -22,8 +22,8 @@ export default function ShareListingButton({
   const share = async () => {
     const text =
       lang === "es"
-        ? `Mira este servicio en AISaravanna: ${title}`
-        : `Check out this service on AISaravanna: ${title}`;
+        ? `Mira este servicio en Sarvaone: ${title}`
+        : `Check out this service on Sarvaone: ${title}`;
 
     if (typeof navigator !== "undefined" && navigator.share) {
       try {

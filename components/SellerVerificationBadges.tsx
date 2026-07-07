@@ -56,7 +56,7 @@ export function SellerVerificationBadges({
   if (tier) {
     const title =
       lang === "en"
-        ? `${tierLabel(tier, lang)} trust level on AISaravanna`
+        ? `${tierLabel(tier, lang)} trust level on Sarvaone`
         : `Nivel de confianza: ${tierLabel(tier, lang)}`;
     parts.push(
       <span
@@ -91,8 +91,8 @@ export function SellerVerificationBadges({
   if (einVerified) {
     const title =
       lang === "en"
-        ? "Verified: business EIN (Employer ID) reviewed by AISaravanna"
-        : "Verificado: EIN de negocio revisado por AISaravanna";
+        ? "Verified: business EIN (Employer ID) reviewed by Sarvaone"
+        : "Verificado: EIN de negocio revisado por Sarvaone";
     parts.push(
       <span
         key="ein"
@@ -131,8 +131,8 @@ export function SellerVerificationBadges({
   if (parts.length === 0 && platformListingVerified) {
     const title =
       lang === "en"
-        ? "Listing reviewed and approved on AISaravanna"
-        : "Anuncio revisado y aprobado en AISaravanna";
+        ? "Listing reviewed and approved on Sarvaone"
+        : "Anuncio revisado y aprobado en Sarvaone";
     const label = lang === "en" ? "Verified" : "Verificado";
     parts.push(
       <span

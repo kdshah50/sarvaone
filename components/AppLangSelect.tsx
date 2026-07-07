@@ -40,7 +40,7 @@ type Props = {
 
 /** Lane-aware dropdown: English default URL (no `lang`); Latino offers EN/ES; South Asian adds HI/GU. */
 export default function AppLangSelect(props: Props) {
-  const { laneOverride = undefined, labelLang = "en", id = "aisaravanna-lang-select", className = "" } = props;
+  const { laneOverride = undefined, labelLang = "en", id = "sarvaone-lang-select", className = "" } = props;
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();

@@ -134,7 +134,7 @@ export async function POST(req: NextRequest) {
     if (twilioConfigured) {
       step = "twilio";
       const fromAddress = asWhatsappAddress(from!);
-      const msgBody = `Your AISaravanna code is: *${code}*\nValid 5 minutes. Do not share it.`;
+      const msgBody = `Your Sarvaone code is: *${code}*\nValid 5 minutes. Do not share it.`;
       const authHeader = "Basic " + Buffer.from(`${sid!}:${token!}`).toString("base64");
       const twilioUrl = `https://api.twilio.com/2010-04-01/Accounts/${sid!}/Messages.json`;
 

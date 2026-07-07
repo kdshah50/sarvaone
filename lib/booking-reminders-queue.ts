@@ -86,7 +86,7 @@ export async function processDueBookingReminders(limit = 35): Promise<{
     const helloEn = name ? `Hi ${name}` : "Hi";
     const msg =
       row.reminder_kind === "appointment"
-        ? `${helloEn}: reminder for your upcoming appointment for "${title}". Open AISaravanna: ${link}`
+        ? `${helloEn}: reminder for your upcoming appointment for "${title}". Open Sarvaone: ${link}`
         : `${helloEn}: good time to rebook "${title}". Open your listing: ${link}`;
 
     let anyOk = false;
@@ -100,7 +100,7 @@ export async function processDueBookingReminders(limit = 35): Promise<{
       const ok = await sendReminderEmail({
         to: row.delivery_email,
         subject: `Reminder — ${title.slice(0, 80)}`,
-        html: `<p>${escapeHtml(msg)}</p><p><a href="${escapeHtml(link)}">Open AISaravanna</a></p>`,
+        html: `<p>${escapeHtml(msg)}</p><p><a href="${escapeHtml(link)}">Open Sarvaone</a></p>`,
       });
       if (ok) anyOk = true;
     }

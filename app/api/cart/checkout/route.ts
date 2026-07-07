@@ -108,7 +108,7 @@ export async function POST(req: NextRequest) {
           currency: "usd",
           unit_amount: pricing.commissionCents,
           product_data: {
-            name: "AISaravanna platform fee (commission)",
+            name: "Sarvaone platform fee (commission)",
             description: "Platform commission per listing (admin-defined)",
           },
         },

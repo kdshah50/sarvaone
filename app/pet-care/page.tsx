@@ -70,7 +70,7 @@ const COPY: Record<
     heroEyebrow: "Para paseadores, cuidadores y estética canina",
     heroTitle: "Consigue más clientes de cuidado de mascotas en New Jersey.",
     heroSub:
-      "Registro gratis en AISaravanna — menú de precios fijos, solicitud con datos de contacto, cotización oficial en el chat y cobro seguro en la app.",
+      "Registro gratis en Sarvaone — menú de precios fijos, solicitud con datos de contacto, cotización oficial en el chat y cobro seguro en la app.",
     ctaWalk: "Registrarme como paseador",
     ctaSit: "Registrarme pet sitting",
     ctaGroom: "Registrarme estética canina",
@@ -79,7 +79,7 @@ const COPY: Record<
     badgeVerified: "Perfil verificado",
     badgeReach: "Dueños locales reales",
     whyTitle: "¿Por qué unirte?",
-    whySub: "Tres razones por las que cuidadores de mascotas en NJ ya están en AISaravanna.",
+    whySub: "Tres razones por las que cuidadores de mascotas en NJ ya están en Sarvaone.",
     why1Title: "Más reservas sin anuncios caros",
     why1Body:
       "Familias y expatriados te encuentran cuando buscan paseos, hospedaje o estética para sus perros y gatos en su colonia.",
@@ -105,7 +105,7 @@ const COPY: Record<
     menuNote: "El precio puede variar según mascota, distancia y condición — se confirma en cada cotización.",
     faqTitle: "Preguntas frecuentes",
     faq1Q: "¿Cuánto cuesta registrarme?",
-    faq1A: "Nada. El registro es gratuito. AISaravanna cobra comisión solo cuando recibes un pago en línea.",
+    faq1A: "Nada. El registro es gratuito. Sarvaone cobra comisión solo cuando recibes un pago en línea.",
     faq2Q: "¿Puedo ofrecer más de un servicio?",
     faq2A: "Regístrate con tu servicio principal. Puedes indicar otros servicios en tu perfil o crear anuncios adicionales.",
     faq3Q: "¿Cómo funciona la cotización?",
@@ -121,7 +121,7 @@ const COPY: Record<
     buyerTitle: "Encuentra paseadores y cuidadores cerca de ti.",
     buyerSub: "Mira proveedores aprobados en New Jersey con menú y precios claros.",
     buyerCta: "Buscar cuidado de mascotas",
-    footerNote: "AISaravanna — mercado local en New Jersey de Allende",
+    footerNote: "Sarvaone — mercado local en New Jersey de Allende",
     langToggleEs: "ES",
     langToggleEn: "EN",
   },
@@ -130,7 +130,7 @@ const COPY: Record<
     heroEyebrow: "For dog walkers, pet sitters, and groomers",
     heroTitle: "Get more pet care clients in New Jersey.",
     heroSub:
-      "Free signup on AISaravanna — fixed-price menu, contact details on quote request, official quote in chat, and secure in-app payment.",
+      "Free signup on Sarvaone — fixed-price menu, contact details on quote request, official quote in chat, and secure in-app payment.",
     ctaWalk: "Sign up as dog walker",
     ctaSit: "Sign up for pet sitting",
     ctaGroom: "Sign up for dog grooming",
@@ -139,7 +139,7 @@ const COPY: Record<
     badgeVerified: "Verified profile",
     badgeReach: "Real local pet owners",
     whyTitle: "Why join?",
-    whySub: "Three reasons pet care providers in NJ are on AISaravanna.",
+    whySub: "Three reasons pet care providers in NJ are on Sarvaone.",
     why1Title: "More bookings, less ad spend",
     why1Body:
       "Families and expats find you when they need walks, boarding, or grooming for dogs and cats in their neighborhood.",
@@ -164,7 +164,7 @@ const COPY: Record<
     menuNote: "Price may vary by pet, distance, and condition — confirmed on each quote.",
     faqTitle: "FAQ",
     faq1Q: "How much does signup cost?",
-    faq1A: "Nothing. Signup is free. AISaravanna only takes a commission when you receive an in-app payment.",
+    faq1A: "Nothing. Signup is free. Sarvaone only takes a commission when you receive an in-app payment.",
     faq2Q: "Can I offer more than one service?",
     faq2A: "Sign up with your primary service. You can note additional services on your profile or create extra listings.",
     faq3Q: "How does quoting work?",
@@ -180,7 +180,7 @@ const COPY: Record<
     buyerTitle: "Find walkers and sitters near you.",
     buyerSub: "Browse approved pet care listings in New Jersey with clear menus and prices.",
     buyerCta: "Search pet care",
-    footerNote: "AISaravanna — local marketplace in New Jersey de Allende",
+    footerNote: "Sarvaone — local marketplace in New Jersey de Allende",
     langToggleEs: "ES",
     langToggleEn: "EN",
   },
@@ -195,8 +195,8 @@ export function generateMetadata({
   const t = COPY[lang];
   const title =
     lang === "es"
-      ? "Cuidado de mascotas en New Jersey de Allende | AISaravanna"
-      : "Pet care in New Jersey de Allende | AISaravanna";
+      ? "Cuidado de mascotas en New Jersey de Allende | Sarvaone"
+      : "Pet care in New Jersey de Allende | Sarvaone";
   return {
     title,
     description: t.heroSub,

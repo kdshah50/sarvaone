@@ -1,11 +1,11 @@
 ---
-description: This repo is Sarvaone (AI Saravanna product) — not naranjogo3
+description: This repo is Sarvaone — not naranjogo3
 alwaysApply: true
 ---
 
 # Project identity
 
-- **Product / workspace name: Sarvaone** (npm package `sarvaone`). US-first; English default UI, Spanish via `?lang=es` or the header toggle. Legacy copy may still say “AISaravanna” in places until rebranded.
+- **Product / workspace name: Sarvaone** (npm package `sarvaone`). US-first; English default UI, Spanish via `?lang=es` or the header toggle.
 - **Production domain:** `https://sarvaone.com` (`NEXT_PUBLIC_APP_URL`).
 - **Git:** The only remote should be `origin` → `https://github.com/kdshah50/Sarvaone.git`. Do not add or push to `naranjogo3` or other remotes unless the user explicitly asks.
 - **Deploy / CI:** Next.js on **Vercel** (GitHub → Vercel project **sarvaone**). **Do not add or assume GitLab CI** unless the user explicitly asks.

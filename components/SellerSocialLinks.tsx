@@ -28,12 +28,12 @@ export function SellerSocialLinks({
 
   const bookNote =
     lang === "es"
-      ? "Reserva y paga en AISaravanna"
+      ? "Reserva y paga en Sarvaone"
       : lang === "hi"
-        ? "AISaravanna में बुक करें"
+        ? "Sarvaone में बुक करें"
         : lang === "gu"
-          ? "AISaravanna માં બુક કરો"
-          : "Book & pay on AISaravanna";
+          ? "Sarvaone માં બુક કરો"
+          : "Book & pay on Sarvaone";
 
   return (
     <div

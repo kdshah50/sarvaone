@@ -35,14 +35,14 @@ export async function generateMetadata({ params }: { params: { id: string } }): 
   const supaUrl = getSupabaseUrl();
   const h = getServiceRoleRestHeaders();
   const data = await fetchListingMetaRow(supaUrl, params.id, h);
-  if (!data) return { title: "Listing not found | AISaravanna" };
+  if (!data) return { title: "Listing not found | Sarvaone" };
 
   const headTitle = listingTitle(data as Parameters<typeof listingTitle>[0], "en");
   const headDesc = listingDescription(data as Parameters<typeof listingDescription>[0], "en");
   const priceMxn = Number((data as { price_mxn?: unknown }).price_mxn);
   const price = formatUsdCents(Number.isFinite(priceMxn) ? priceMxn : 0, "en");
   return {
-    title: `${headTitle} — ${price} | AISaravanna`,
+    title: `${headTitle} — ${price} | Sarvaone`,
     description: (headDesc || headTitle).slice(0, 160),
     openGraph: {
       title: headTitle,

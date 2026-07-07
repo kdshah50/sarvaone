@@ -651,14 +651,14 @@ export default function ServiceBookingBlock({
             listingLang === "en" ? (
               <>
                 One <strong>platform fee</strong> covers all <strong>{booking.packageSessionCount} visits</strong> in the
-                approved plan (commission on the plan total, min. $10 USD). Stay on AISaravanna for loyalty, guarantee, and
+                approved plan (commission on the plan total, min. $10 USD). Stay on Sarvaone for loyalty, guarantee, and
                 follow-up bookings—like a multi-visit or monthly rhythm without paying list price each time.
               </>
             ) : (
               <>
                 Una sola <strong>tarifa de plataforma</strong> cubre las{" "}
                 <strong>{booking.packageSessionCount} visitas</strong> del plan aprobado (comisión sobre el total del plan,
-                mín. $10 USD). Sigue en AISaravanna: lealtad, garantía y re-reservas — ideal si vas varias veces al mes.
+                mín. $10 USD). Sigue en Sarvaone: lealtad, garantía y re-reservas — ideal si vas varias veces al mes.
               </>
             )
           ) : isService ? (

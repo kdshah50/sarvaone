@@ -7,7 +7,7 @@ export type UiLang = "en" | "es";
 export const DEFAULT_LANG: Lang = "en";
 
 /** Browser persistence for language preference (profile, bookings, etc.). */
-export const LANG_STORAGE_KEY = "aisaravanna_lang";
+export const LANG_STORAGE_KEY = "sarvaone_lang";
 
 /** Map full Lang to en/es for ported service-flow UI copy. */
 export function langForUiCopy(lang: Lang): UiLang {
@@ -40,7 +40,7 @@ export function withLang(path: string, lang: Lang): string {
 
 /** Older keys — checked in order when reading preference */
 /** Prior spellings / keys users may still have in localStorage */
-const LEGACY_LANG_KEYS = ["aisarvanna_lang", "aisarvana_lang", "naranjo_lang"] as const;
+const LEGACY_LANG_KEYS = ["aisaravanna_lang", "aisarvanna_lang", "aisarvana_lang", "naranjo_lang"] as const;
 
 /**
  * Resolve language from `?lang=` query. Unknown or missing → English.

@@ -176,7 +176,7 @@ function CartPageInner() {
             <span className="font-medium"><UsdCents cents={preview.subtotalCents} lang={lang} /></span>
           </div>
           <div className="flex justify-between">
-            <span className="text-[#6B7280]">AISaravanna fee</span>
+            <span className="text-[#6B7280]">Sarvaone fee</span>
             <span className="font-medium"><UsdCents cents={preview.commissionCents} lang={lang} /></span>
           </div>
           <div className="flex justify-between">
@@ -188,7 +188,7 @@ function CartPageInner() {
             <span><UsdCents cents={preview.totalCents} lang={lang} /></span>
           </div>
           <p className="text-xs text-[#6B7280] pt-2">
-            The seller receives the subtotal via Stripe Connect; AISaravanna retains the fee + VAT shown. Adjust{" "}
+            The seller receives the subtotal via Stripe Connect; Sarvaone retains the fee + VAT shown. Adjust{" "}
             <code className="text-[11px]">MARKETPLACE_VAT_PERCENT</code> on the server if VAT rules change.
           </p>
         </div>

@@ -138,8 +138,8 @@ function HeaderInner() {
       <header className="bg-white border-b border-[#E5E0D8] sticky top-0 z-50">
         <div className="max-w-5xl mx-auto px-4 h-14 flex items-center justify-between gap-4">
           <Link href={hrefWithLang("/", lang, params)} className="flex-shrink-0 font-serif text-lg font-bold tracking-tight">
-            <span className="text-[#1B4332]">AI</span>
-            <span className="text-[#1C1917]">Saravanna</span>
+            <span className="text-[#1B4332]">Sarva</span>
+            <span className="text-[#1C1917]">one</span>
             <span className="text-[#D4A017] text-xs font-bold ml-0.5">✦</span>
           </Link>
 

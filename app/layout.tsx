@@ -15,13 +15,13 @@ const siteUrl = getPublicAppUrl();
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  title: "AISaravanna — AI-powered local services",
+  title: "Sarvaone — AI-powered local services",
   description: "Find, book, and pay for verified local services in the United States. English by default; Spanish available.",
   openGraph: {
-    title: "AISaravanna — AI-powered local services",
+    title: "Sarvaone — AI-powered local services",
     description: "Find, book, and pay for verified local services. English & Spanish.",
     url: siteUrl,
-    siteName: "AISaravanna",
+    siteName: "Sarvaone",
     locale: "en_US",
     alternateLocale: ["es_US"],
     type: "website",

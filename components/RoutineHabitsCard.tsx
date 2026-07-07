@@ -8,24 +8,24 @@ export default function RoutineHabitsCard({ lang = "en" }: { lang?: Lang }) {
   const t =
     lang === "es"
       ? {
-          title: "Haz de AISaravanna tu rutina",
+          title: "Haz de Sarvaone tu rutina",
           body: "Reserva de nuevo con tus proveedores de confianza, usa “Recordarme” en Mis reservas para servicios periódicos, y agrega favoritos para volver en un clic.",
           cta: "Mis reservas",
         }
       : lang === "hi"
         ? {
-            title: "AISaravanna को अपनी दिनचर्या बनाएँ",
+            title: "Sarvaone को अपनी दिनचर्या बनाएँ",
             body: "भरोसेमंद प्रदाताओं से दोबारा बुक करें, बार-बार सेवाओं के लिए “मुझे याद दिलाएँ” उपयोग करें, और एक टैप में लौटने के लिए पसंदीदा सहेजें।",
             cta: "मेरी बुकिंग",
           }
         : lang === "gu"
           ? {
-              title: "AISaravannaને તમારી દિનચર્યા બનાવો",
+              title: "Sarvaoneને તમારી દિનચર્યા બનાવો",
               body: "વિશ્વસનીય પ્રદાતાઓ સાથે ફરીથી બુક કરો, પુનરાવર્તિત સેવાઓ માટે “મને યાદ અપાવો” વાપરો, અને એક ટૅપમાં પાછા ફરવા માટે મનપસંદ સાચવો।",
               cta: "મારી બુકિંગ",
             }
           : {
-              title: "Make AISaravanna your routine",
+              title: "Make Sarvaone your routine",
               body: "Rebook trusted providers, use “Remind me” on My bookings for repeat services, and save favorites to return in one tap.",
               cta: "My bookings",
             };

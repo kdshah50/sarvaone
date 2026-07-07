@@ -45,8 +45,8 @@ export default function SellerStripePayoutCard({
       </h2>
       <p className="text-sm text-[#6B7280] mb-4 leading-relaxed">
         {lang === "es"
-          ? "Los compradores pueden pagar artículos en el carrito. Conecta una cuenta Stripe Express para recibir el subtotal del artículo. AISaravanna retiene la comisión y el IVA mostrados al pagar."
-          : "Buyers can pay for goods in the cart. Connect a Stripe Express account to receive the item subtotal. AISaravanna keeps the commission + VAT line shown at checkout."}
+          ? "Los compradores pueden pagar artículos en el carrito. Conecta una cuenta Stripe Express para recibir el subtotal del artículo. Sarvaone retiene la comisión y el IVA mostrados al pagar."
+          : "Buyers can pay for goods in the cart. Connect a Stripe Express account to receive the item subtotal. Sarvaone keeps the commission + VAT line shown at checkout."}
       </p>
       {hasStripeConnect && (
         <p className="text-xs text-emerald-800 bg-emerald-50 border border-emerald-200 rounded-lg px-3 py-2 mb-3">

@@ -17,7 +17,7 @@ function nominatimUserAgent(): string {
   const u = process.env.NOMINATIM_USER_AGENT?.trim();
   return (
     u ||
-    "AISaravannaDev/1.0 (NJ place→county resolver; https://github.com/kdshah50/AISarvanna)"
+    "SarvaoneDev/1.0 (NJ place→county resolver; https://github.com/kdshah50/Sarvaone)"
   );
 }
 

@@ -1,10 +1,10 @@
 import { headers } from "next/headers";
 
-const DEFAULT = "https://aisaravanna.com";
+const DEFAULT = "https://sarvaone.com";
 
 /**
  * Public site origin (no trailing slash). NEXT_PUBLIC_APP_URL wins when set (e.g. on Vercel).
- * Default is the AISaravanna apex (override with NEXT_PUBLIC_APP_URL in production).
+ * Default is the Sarvaone apex (override with NEXT_PUBLIC_APP_URL in production).
  * Tolerates values missing `https://` or malformed URLs so `metadataBase` in layout never throws.
  */
 export function getPublicAppUrl(): string {

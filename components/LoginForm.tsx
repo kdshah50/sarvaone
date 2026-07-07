@@ -75,8 +75,8 @@ export default function LoginForm() {
     <main className="min-h-screen bg-[#FDF8F1] flex items-center justify-center px-4">
       <div className="w-full max-w-sm">
         <Link href="/" className="flex justify-center mb-8 font-serif text-2xl font-bold tracking-tight">
-          <span className="text-[#1B4332]">AI</span>
-          <span className="text-[#1C1917]">Saravanna</span>
+          <span className="text-[#1B4332]">Sarva</span>
+          <span className="text-[#1C1917]">one</span>
           <span className="text-[#D4A017] text-sm font-bold ml-0.5 mt-1">✦</span>
         </Link>
         <div className="bg-white rounded-2xl border border-[#E5E0D8] p-8 shadow-sm">

@@ -44,10 +44,10 @@ export async function generateMetadata({ params }: { params: { id: string } }): 
   );
   const rows = res.ok ? await res.json() : [];
   const user = rows[0];
-  if (!user) return { title: "Provider | AISaravanna" };
+  if (!user) return { title: "Provider | Sarvaone" };
   return {
-    title: `${user.display_name ?? "Provider"} | AISaravanna`,
-    description: "Service provider profile on AISaravanna.",
+    title: `${user.display_name ?? "Provider"} | Sarvaone`,
+    description: "Service provider profile on Sarvaone.",
   };
 }
 

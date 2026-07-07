@@ -127,7 +127,7 @@ export async function notifyBuyerBookingCommissionPaid(supabase: SupabaseClient,
       : `Referencia: ${row.id.slice(0, 8)}…`;
 
     const msg = [
-      `✅ *Reserva confirmada — AISaravanna*`,
+      `✅ *Reserva confirmada — Sarvaone*`,
       ``,
       ticketLine,
       ``,
@@ -141,7 +141,7 @@ export async function notifyBuyerBookingCommissionPaid(supabase: SupabaseClient,
       ``,
       `Confirma fecha y hora exactas por WhatsApp con tu proveedor.`,
       ``,
-      `*Garantía:* aplicación y posibles reembolsos solo si reservaste y pagaste *en AISaravanna*: ${supportUrl}`,
+      `*Garantía:* aplicación y posibles reembolsos solo si reservaste y pagaste *en Sarvaone*: ${supportUrl}`,
       ``,
       `Seguimiento (ticket + estado): ${myBookingsUrl}`,
       ``,

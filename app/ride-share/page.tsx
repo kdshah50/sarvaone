@@ -75,14 +75,14 @@ const COPY: Record<
     heroEyebrow: "Para conductores y taxis en New Jersey",
     heroTitle: "Publica tus tarifas fijas y recibe solicitudes de viaje.",
     heroSub:
-      "Registro gratis en AISaravanna — menú de precios por trayecto (EWR, JFK, LGA, hospital), cotización en el chat y cobro seguro en la app. Reserva con anticipación — no es Uber al instante.",
+      "Registro gratis en Sarvaone — menú de precios por trayecto (EWR, JFK, LGA, hospital), cotización en el chat y cobro seguro en la app. Reserva con anticipación — no es Uber al instante.",
     ctaPrimary: "Registrarme como conductor",
     ctaSecondary: "Ver cómo funciona",
     badgeFree: "Registro gratis",
     badgeVerified: "Perfil verificado",
     badgeReach: "Pasajeros locales reales",
     whyTitle: "¿Por qué unirte?",
-    whySub: "Tres razones por las que conductores en NJ ya están en AISaravanna.",
+    whySub: "Tres razones por las que conductores en NJ ya están en Sarvaone.",
     why1Title: "Más viajes sin comisiones ocultas",
     why1Body:
       "Residentes, expatriados y visitantes te encuentran cuando buscan taxi con precio claro en su colonia.",
@@ -110,7 +110,7 @@ const COPY: Record<
       "El precio puede variar por tráfico, horario, paradas extra o espera adicional — se confirma en cada cotización.",
     faqTitle: "Preguntas frecuentes",
     faq1Q: "¿Cuánto cuesta registrarme?",
-    faq1A: "Nada. El registro es gratuito. AISaravanna cobra comisión solo cuando recibes un pago en línea.",
+    faq1A: "Nada. El registro es gratuito. Sarvaone cobra comisión solo cuando recibes un pago en línea.",
     faq2Q: "¿Puedo cambiar mis tarifas?",
     faq2A: "Sí. En tu perfil puedes editar el menú cuando quieras: agregar trayectos, cambiar precios o eliminar servicios.",
     faq3Q: "¿Cómo solicita un pasajero un viaje?",
@@ -122,7 +122,7 @@ const COPY: Record<
     faq5A: "No. Solo clientes que abren chat en la app pueden contactarte.",
     faq6Q: "¿Es como Uber o Lyft?",
     faq6A:
-      "No. AISaravanna no envía un carro al instante. Publicas tu menú, el pasajero reserva desde tu anuncio, tú confirmas la cotización y cobras depósito + saldo en la app.",
+      "No. Sarvaone no envía un carro al instante. Publicas tu menú, el pasajero reserva desde tu anuncio, tú confirmas la cotización y cobras depósito + saldo en la app.",
     marketTitle: "Promociona tu anuncio en la comunidad",
     marketSub:
       "Los pasajeros reservan desde el enlace de tu anuncio — no necesitan descargar otra app como Uber.",
@@ -143,7 +143,7 @@ const COPY: Record<
     buyerTitle: "Encuentra un conductor cerca de ti.",
     buyerSub: "Mira taxis verificados en Middlesex County, NJ con menú de tarifas fijas (EWR, JFK, LGA, hospital).",
     buyerCta: "Ver taxis en Middlesex",
-    footerNote: "AISaravanna — mercado local en Middlesex County, New Jersey",
+    footerNote: "Sarvaone — mercado local en Middlesex County, New Jersey",
     langToggleEs: "ES",
     langToggleEn: "EN",
   },
@@ -152,14 +152,14 @@ const COPY: Record<
     heroEyebrow: "For drivers and taxis in New Jersey",
     heroTitle: "Publish fixed fares and receive ride requests.",
     heroSub:
-      "Free signup on AISaravanna — per-trip price menu (EWR, JFK, LGA, hospital runs), quotes in chat, and secure in-app payments. Book ahead — not instant Uber-style dispatch.",
+      "Free signup on Sarvaone — per-trip price menu (EWR, JFK, LGA, hospital runs), quotes in chat, and secure in-app payments. Book ahead — not instant Uber-style dispatch.",
     ctaPrimary: "Sign up as a driver",
     ctaSecondary: "See how it works",
     badgeFree: "Free signup",
     badgeVerified: "Verified profile",
     badgeReach: "Real local riders",
     whyTitle: "Why join?",
-    whySub: "Three reasons drivers in NJ are already on AISaravanna.",
+    whySub: "Three reasons drivers in NJ are already on Sarvaone.",
     why1Title: "More rides, clear pricing",
     why1Body:
       "Residents, expats, and visitors find you when they want a taxi with upfront fares in their neighborhood.",
@@ -186,7 +186,7 @@ const COPY: Record<
       "Price may vary with traffic, time of day, extra stops, or additional wait — shown on every quote.",
     faqTitle: "FAQ",
     faq1Q: "How much does signup cost?",
-    faq1A: "Nothing. Signup is free. AISaravanna only takes a commission when you receive an in-app payment.",
+    faq1A: "Nothing. Signup is free. Sarvaone only takes a commission when you receive an in-app payment.",
     faq2Q: "Can I change my fares?",
     faq2A: "Yes. From your profile you can edit the menu anytime: add trips, change prices, or remove services.",
     faq3Q: "How does a rider request a trip?",
@@ -198,7 +198,7 @@ const COPY: Record<
     faq5A: "No. Only customers who open a chat in the app can contact you.",
     faq6Q: "Is this like Uber or Lyft?",
     faq6A:
-      "No. AISaravanna does not dispatch a car on demand. You publish your menu, the rider books from your listing link, you confirm the quote, and collect deposit + balance in the app.",
+      "No. Sarvaone does not dispatch a car on demand. You publish your menu, the rider books from your listing link, you confirm the quote, and collect deposit + balance in the app.",
     marketTitle: "Market your listing in the community",
     marketSub:
       "Riders book from your listing link — they do not need to download a separate app like Uber.",
@@ -219,7 +219,7 @@ const COPY: Record<
     buyerTitle: "Find a driver near you.",
     buyerSub: "Browse verified taxi listings in Middlesex County, NJ with fixed-fare menus (EWR, JFK, LGA, hospital).",
     buyerCta: "Browse taxis in Middlesex",
-    footerNote: "AISaravanna — local marketplace in Middlesex County, New Jersey",
+    footerNote: "Sarvaone — local marketplace in Middlesex County, New Jersey",
     langToggleEs: "ES",
     langToggleEn: "EN",
   },
@@ -234,8 +234,8 @@ export function generateMetadata({
   const t = COPY[lang];
   const title =
     lang === "es"
-      ? "Taxi y transporte en Middlesex County, NJ | AISaravanna"
-      : "Taxi and ride service in Middlesex County, NJ | AISaravanna";
+      ? "Taxi y transporte en Middlesex County, NJ | Sarvaone"
+      : "Taxi and ride service in Middlesex County, NJ | Sarvaone";
   return {
     title,
     description: t.heroSub,

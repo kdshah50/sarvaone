@@ -43,10 +43,10 @@ export async function generateMetadata({ params }: { params: { id: string } }): 
     { headers: h, cache: "no-store" }
   );
   const [user] = res.ok ? await res.json() : [];
-  if (!user) return { title: "Seller | AISaravanna" };
+  if (!user) return { title: "Seller | Sarvaone" };
   return {
-    title: `${user.display_name ?? "Seller"} | AISaravanna`,
-    description: `Seller profile on AISaravanna. Trust: ${user.trust_badge ?? "none"}.`,
+    title: `${user.display_name ?? "Seller"} | Sarvaone`,
+    description: `Seller profile on Sarvaone. Trust: ${user.trust_badge ?? "none"}.`,
   };
 }
 

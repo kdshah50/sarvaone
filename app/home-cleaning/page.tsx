@@ -64,14 +64,14 @@ const COPY: Record<
     heroEyebrow: "Para empleadas domésticas, equipos de limpieza y servicios a domicilio",
     heroTitle: "Consigue más clientes de limpieza en New Jersey.",
     heroSub:
-      "Aparece en AISaravanna con menú de precios por cuarto — estándar o profunda, baños, cocina, lavado de ropa y extras. Presupuesto en el chat y cobro seguro en la app.",
+      "Aparece en Sarvaone con menú de precios por cuarto — estándar o profunda, baños, cocina, lavado de ropa y extras. Presupuesto en el chat y cobro seguro en la app.",
     ctaPrimary: "Registrarme gratis",
     ctaSecondary: "Ver cómo funciona",
     badgeFree: "Registro gratis",
     badgeVerified: "Perfil verificado",
     badgeReach: "Clientes locales reales",
     whyTitle: "¿Por qué unirte?",
-    whySub: "Tres razones por las que limpiadoras de NJ ya están en AISaravanna.",
+    whySub: "Tres razones por las que limpiadoras de NJ ya están en Sarvaone.",
     why1Title: "Más reservas sin anuncios caros",
     why1Body:
       "Familias, expatriados y rentas vacacionales te encuentran cuando buscan limpieza estándar, profunda o post-mudanza en su colonia.",
@@ -94,13 +94,13 @@ const COPY: Record<
       "El cliente te escribe en la app, arman el presupuesto con tu menú, paga en línea, y tú confirmas el servicio.",
     menuTitle: "Ejemplo de menú (precios de referencia)",
     menuSub:
-      "Esta plantilla se carga al registrarte. Editas cada precio según tu zona y experiencia. AISaravanna no te impone precios.",
+      "Esta plantilla se carga al registrarte. Editas cada precio según tu zona y experiencia. Sarvaone no te impone precios.",
     menuNote:
       "El precio puede variar según el estado del hogar, el tamaño real y el acceso — aparece en cada cotización.",
     faqTitle: "Preguntas frecuentes",
     faq1Q: "¿Cuánto cuesta registrarme?",
     faq1A:
-      "Nada. El registro es gratuito. AISaravanna cobra comisión solo cuando recibes un pago en línea — los términos se acuerdan contigo antes de cualquier cobro.",
+      "Nada. El registro es gratuito. Sarvaone cobra comisión solo cuando recibes un pago en línea — los términos se acuerdan contigo antes de cualquier cobro.",
     faq2Q: "¿Estándar vs limpieza profunda?",
     faq2A:
       "En tu menú publicas ambas por cuarto (recámara, baño, cocina, etc.). En el chat seleccionas cuartos y frecuencia (única, diaria, semanal, 2×/semana, mensual) para calcular el total.",
@@ -109,7 +109,7 @@ const COPY: Record<
       "Tú decides. Puedes incluir «productos incluidos» en tu menú con un cargo, o coordinar que el cliente los tenga listos.",
     faq4Q: "¿Cómo recibo el pago?",
     faq4A:
-      "El cliente paga en la app. Puede ser solo la tarifa de AISaravanna o el servicio completo si tienes cobros con Stripe Connect activos.",
+      "El cliente paga en la app. Puede ser solo la tarifa de Sarvaone o el servicio completo si tienes cobros con Stripe Connect activos.",
     faq5Q: "¿Mi WhatsApp es público?",
     faq5A: "No. Solo clientes que abren chat en la app pueden contactarte.",
     finalTitle: "Empieza hoy. Tarda 5 minutos.",
@@ -118,7 +118,7 @@ const COPY: Record<
     buyerTitle: "Encuentra limpieza del hogar cerca de ti.",
     buyerSub: "Mira proveedores aprobados en New Jersey de Allende, con menú y precios claros.",
     buyerCta: "Ver limpieza en NJ",
-    footerNote: "AISaravanna — mercado local en New Jersey de Allende",
+    footerNote: "Sarvaone — mercado local en New Jersey de Allende",
     langToggleEs: "ES",
     langToggleEn: "EN",
   },
@@ -127,14 +127,14 @@ const COPY: Record<
     heroEyebrow: "For house cleaners, cleaning teams, and on-site services",
     heroTitle: "Get more home cleaning clients in New Jersey.",
     heroSub:
-      "List on AISaravanna with a room-based menu — standard or deep clean, bathrooms, kitchen, laundry, and add-ons. Quote in chat and get paid securely in the app.",
+      "List on Sarvaone with a room-based menu — standard or deep clean, bathrooms, kitchen, laundry, and add-ons. Quote in chat and get paid securely in the app.",
     ctaPrimary: "Sign up for free",
     ctaSecondary: "See how it works",
     badgeFree: "Free signup",
     badgeVerified: "Verified profile",
     badgeReach: "Real local customers",
     whyTitle: "Why join?",
-    whySub: "Three reasons cleaners in NJ are already on AISaravanna.",
+    whySub: "Three reasons cleaners in NJ are already on Sarvaone.",
     why1Title: "More bookings, less ad spend",
     why1Body:
       "Families, expats, and vacation rentals find you when they search for standard, deep, or move-out cleaning in their neighborhood.",
@@ -157,13 +157,13 @@ const COPY: Record<
       "The client messages you in the app, you build a quote from your menu, they pay online, you confirm service.",
     menuTitle: "Sample menu (reference prices)",
     menuSub:
-      "This template loads at signup. Edit every price for your area and experience. AISaravanna doesn't set prices for you.",
+      "This template loads at signup. Edit every price for your area and experience. Sarvaone doesn't set prices for you.",
     menuNote:
       "Price may vary based on home condition, actual size, and access — shown on every quote.",
     faqTitle: "FAQ",
     faq1Q: "How much does signup cost?",
     faq1A:
-      "Nothing. Signup is free. AISaravanna only takes a commission when you receive an in-app payment — terms are agreed before any charge.",
+      "Nothing. Signup is free. Sarvaone only takes a commission when you receive an in-app payment — terms are agreed before any charge.",
     faq2Q: "Standard vs deep cleaning?",
     faq2A:
       "You publish both per room (bedroom, bathroom, kitchen, etc.). In chat you pick rooms and frequency (one-time, daily, weekly, twice/week, monthly) to calculate the total.",
@@ -181,7 +181,7 @@ const COPY: Record<
     buyerTitle: "Find home cleaning near you.",
     buyerSub: "Browse approved cleaning providers in New Jersey de Allende with clear menus and prices.",
     buyerCta: "Browse cleaners in NJ",
-    footerNote: "AISaravanna — local marketplace in New Jersey de Allende",
+    footerNote: "Sarvaone — local marketplace in New Jersey de Allende",
     langToggleEs: "ES",
     langToggleEn: "EN",
   },
@@ -196,8 +196,8 @@ export function generateMetadata({
   const t = COPY[lang];
   const title =
     lang === "es"
-      ? "Limpieza del hogar en New Jersey de Allende | AISaravanna"
-      : "House cleaning in New Jersey de Allende | AISaravanna";
+      ? "Limpieza del hogar en New Jersey de Allende | Sarvaone"
+      : "House cleaning in New Jersey de Allende | Sarvaone";
   return {
     title,
     description: t.heroSub,

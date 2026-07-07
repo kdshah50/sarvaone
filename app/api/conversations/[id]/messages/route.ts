@@ -120,7 +120,7 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
         const appUrl = getPublicAppUrl();
 
         const msg = [
-          `💬 *New message on AISaravanna*`,
+          `💬 *New message on Sarvaone*`,
           ``,
           `De: ${senderName}`,
           `Servicio: ${listingTitle}`,

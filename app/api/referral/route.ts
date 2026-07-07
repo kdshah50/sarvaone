@@ -25,7 +25,7 @@ export async function GET(req: NextRequest) {
     (req.headers.get("x-forwarded-proto")
       ? `${req.headers.get("x-forwarded-proto")}://${req.headers.get("host")}`
       : "") ||
-    "https://aisaravanna.com";
+    "https://sarvaone.com";
 
   const link = `${site}/auth/login?ref=${encodeURIComponent(code)}`;
 

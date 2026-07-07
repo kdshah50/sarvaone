@@ -141,7 +141,7 @@ function ProfilePageInner() {
       communityMarket: "Comunidad del mercado",
       communityChange: "Cambiar comunidad",
       socialHeading:  "Facebook e Instagram (opcional)",
-      socialHint:     "Para que clientes que te encontraron en redes confirmen que eres tú. Reserva y pago siguen en AISaravanna.",
+      socialHint:     "Para que clientes que te encontraron en redes confirmen que eres tú. Reserva y pago siguen en Sarvaone.",
       facebookLabel:  "URL de Facebook",
       instagramLabel: "Usuario de Instagram",
       saveSocial:     "Guardar redes",
@@ -170,7 +170,7 @@ function ProfilePageInner() {
       communityMarket: "Market community",
       communityChange: "Change community",
       socialHeading:  "Facebook & Instagram (optional)",
-      socialHint:     "Help clients who found you on social confirm it’s you. Booking and payment stay on AISaravanna.",
+      socialHint:     "Help clients who found you on social confirm it’s you. Booking and payment stay on Sarvaone.",
       facebookLabel:  "Facebook URL",
       instagramLabel: "Instagram username",
       saveSocial:     "Save social links",
@@ -476,8 +476,8 @@ function ProfilePageInner() {
             <div className="bg-indigo-50 border border-indigo-200/80 rounded-xl p-4 text-sm text-indigo-900 font-medium flex items-center gap-2 mb-3">
               ✓{" "}
               {lang === "es"
-                ? "Tu EIN de negocio fue revisado por AISaravanna"
-                : "Your business EIN has been reviewed by AISaravanna"}
+                ? "Tu EIN de negocio fue revisado por Sarvaone"
+                : "Your business EIN has been reviewed by Sarvaone"}
             </div>
           )}
 
@@ -681,7 +681,7 @@ function ProfilePageInner() {
               </svg>
               <div>
                 <p className="text-sm font-bold text-emerald-900">
-                  {lang === "es" ? "Garantía AISaravanna" : "AISaravanna guarantee"}
+                  {lang === "es" ? "Garantía Sarvaone" : "Sarvaone guarantee"}
                 </p>
                 <p className="text-xs text-emerald-700">
                   {lang === "es"

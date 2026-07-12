@@ -2,6 +2,7 @@
 import { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { canonicalizeAuthPhone, nationalDigitsForDisplay, normalizeAuthPhone } from "@/lib/phone";
+import { authOtpChannelForPhone, type AuthOtpChannel } from "@/lib/auth-otp-channel";
 
 export default function VerifyForm() {
   const [code, setCode] = useState(["", "", "", "", "", ""]);
@@ -13,6 +14,11 @@ export default function VerifyForm() {
   const router = useRouter();
   const params = useSearchParams();
   const phone = canonicalizeAuthPhone(normalizeAuthPhone(params.get("phone") ?? ""));
+  const channelParam = params.get("channel");
+  const channel: AuthOtpChannel =
+    channelParam === "sms" || channelParam === "whatsapp"
+      ? channelParam
+      : authOtpChannelForPhone(phone);
   const devOtp = (params.get("otp") ?? "").replace(/\D/g, "").slice(0, 6);
   const returnTo = params.get("returnTo") ?? "";
   const referralCode = (params.get("ref") ?? "").trim();
@@ -97,20 +103,23 @@ export default function VerifyForm() {
     <main className="min-h-screen bg-[#FDF8F1] flex items-center justify-center px-4">
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
-          <div className="text-4xl mb-3">💬</div>
+          <div className="text-4xl mb-3">{channel === "sms" ? "📱" : "💬"}</div>
           <h1 className="font-serif text-2xl font-bold text-[#1C1917] mb-2">Code sent</h1>
           <p className="text-sm text-[#6B7280]">
-            We sent a 6-digit code via WhatsApp to
+            We sent a 6-digit code via {channel === "sms" ? "text message" : "WhatsApp"} to
             <br />
             <span className="font-semibold text-[#1C1917]">
               {phonePrefix} {displayNational}
             </span>
           </p>
+          <p className="text-xs text-[#9CA3AF] mt-3 max-w-xs mx-auto leading-relaxed">
+            After you verify, quote and booking chat with providers stays here in Sarvaone — not in SMS or WhatsApp.
+          </p>
         </div>
         <div className="bg-white rounded-2xl border border-[#E5E0D8] p-8 shadow-sm">
           {devTwilioFallback && (
             <div className="mb-4 rounded-xl border border-amber-300 bg-amber-50 px-3 py-2 text-xs text-amber-950 text-left leading-relaxed">
-              <strong>Dev:</strong> WhatsApp delivery failed, but a code was still created. It should fill and submit automatically—if not, use{" "}
+              <strong>Dev:</strong> {channel === "sms" ? "SMS" : "WhatsApp"} delivery failed, but a code was still created. It should fill and submit automatically—if not, use{" "}
               <strong>Resend</strong> and check the terminal running <code className="text-[10px]">npm run dev</code> for{" "}
               <code className="text-[10px]">[DEV OTP]</code> or clear <code className="text-[10px]">TWILIO_*</code> in{" "}
               <code className="text-[10px]">.env.local</code>.
@@ -158,7 +167,7 @@ export default function VerifyForm() {
               <p className="text-sm text-[#9CA3AF]">Resend in {resendCountdown}s</p>
             ) : (
               <button onClick={handleResend} className="text-sm text-[#1B4332] font-semibold hover:underline">
-                Resend code on WhatsApp
+                {channel === "sms" ? "Resend code by text" : "Resend code on WhatsApp"}
               </button>
             )}
           </div>

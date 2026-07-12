@@ -1,21 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
+import { authOtpChannelForPhone, type AuthOtpChannel } from "@/lib/auth-otp-channel";
 import { canonicalizeAuthPhone, isValidAuthPhone, normalizeAuthPhone } from "@/lib/phone";
 import { clientIpFromHeaders, rateLimitMemory } from "@/lib/rate-limit-memory";
 import { getSupabaseUrl } from "@/lib/service-rest";
+import {
+  isTwilioSmsConfigured,
+  isTwilioWhatsAppConfigured,
+  sendSmsToE164Digits,
+  sendWhatsApp,
+} from "@/lib/twilio";
 
 function generateOTP() {
   return Math.floor(Math.random() * 1000000)
     .toString()
     .padStart(6, "0");
-}
-
-function asWhatsappAddress(value: string) {
-  const v = value.trim();
-  if (!v) return v;
-  if (v.startsWith("whatsapp:")) return v;
-  const cleaned = v.replace(/^whatsapp:/, "");
-  return `whatsapp:${cleaned.startsWith("+") ? cleaned : `+${cleaned}`}`;
 }
 
 function getRequiredEnv(name: "NEXT_PUBLIC_SUPABASE_URL" | "SUPABASE_SERVICE_ROLE_KEY") {
@@ -26,21 +25,58 @@ function getRequiredEnv(name: "NEXT_PUBLIC_SUPABASE_URL" | "SUPABASE_SERVICE_ROL
   return value;
 }
 
-function logSupabaseError(step: string, phone: string, err: any) {
-  const payload = {
+function logSupabaseError(step: string, phone: string, err: unknown) {
+  const e = err as { message?: string; code?: string; details?: string; hint?: string; status?: number };
+  console.error(`[send-otp] ${step}`, {
     phone,
-    message: err?.message,
-    code: err?.code,
-    details: err?.details,
-    hint: err?.hint,
-    status: err?.status,
+    message: e?.message,
+    code: e?.code,
+    details: e?.details,
+    hint: e?.hint,
+    status: e?.status,
     raw: typeof err === "object" ? JSON.stringify(err) : String(err),
-  };
-  console.error(`[send-otp] ${step}`, payload);
+  });
 }
 
 function newRequestId(req: NextRequest) {
   return req.headers.get("x-vercel-id") ?? globalThis.crypto?.randomUUID?.() ?? String(Date.now());
+}
+
+function otpMessageBody(code: string): string {
+  return `Your Sarvaone code is: *${code}*\nValid 5 minutes. Do not share it.`;
+}
+
+async function deliverOtp(
+  phone: string,
+  channel: AuthOtpChannel,
+  code: string,
+  requestId: string,
+): Promise<{ ok: boolean; twilioStatus?: number; twilioError?: string; twilioCode?: number }> {
+  const msgBody = otpMessageBody(code);
+
+  if (channel === "sms") {
+    console.log("[send-otp] sms-attempt", { requestId, phone });
+    const ok = await sendSmsToE164Digits(phone, msgBody.replace(/\*/g, ""));
+    return { ok };
+  }
+
+  const destinations = [phone];
+  if (/^52\d{10}$/.test(phone)) {
+    destinations.push(`521${phone.slice(2)}`);
+  }
+
+  const results = await Promise.all(
+    destinations.map(async (dest) => {
+      console.log("[send-otp] whatsapp-attempt", { requestId, phone: dest });
+      const ok = await sendWhatsApp(dest, msgBody);
+      return { dest, ok };
+    }),
+  );
+
+  const anyOk = results.some((r) => r.ok);
+  if (anyOk) return { ok: true };
+
+  return { ok: false, twilioStatus: 500, twilioError: "WhatsApp delivery failed" };
 }
 
 export async function POST(req: NextRequest) {
@@ -51,13 +87,15 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     let phone = normalizeAuthPhone(String(body?.phone ?? ""));
     phone = canonicalizeAuthPhone(phone);
+    const channel = authOtpChannelForPhone(phone);
+
     if (!phone || !isValidAuthPhone(phone)) {
       return NextResponse.json(
         {
           error: "Número inválido (México: 10 dígitos; EE.UU.: 10 dígitos con código +1)",
           requestId,
         },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -66,7 +104,7 @@ export async function POST(req: NextRequest) {
     if (!ipRl.ok) {
       return NextResponse.json(
         { error: "Demasiados intentos desde esta red. Espera 15 minutos.", requestId },
-        { status: 429 }
+        { status: 429 },
       );
     }
 
@@ -83,32 +121,32 @@ export async function POST(req: NextRequest) {
     if (rateLimitError) {
       logSupabaseError("rate-limit-query-failed", phone, rateLimitError);
       return NextResponse.json(
-        {
-          error: "No se pudo enviar el código OTP",
-          requestId,
-          step: "rate_limit",
-        },
-        { status: 500 }
+        { error: "No se pudo enviar el código OTP", requestId, step: "rate_limit" },
+        { status: 500 },
       );
     }
     if ((recentOtps?.length ?? 0) >= maxOtpsPerWindow) {
       return NextResponse.json({ error: "Demasiados intentos. Espera 15 minutos.", requestId }, { status: 429 });
     }
 
-    const { TWILIO_ACCOUNT_SID: sid, TWILIO_AUTH_TOKEN: token, TWILIO_WHATSAPP_FROM: from } = process.env;
-    const twilioConfigured = Boolean(sid && token && from);
-    if (process.env.NODE_ENV === "production" && !twilioConfigured) {
-      console.error("[send-otp] production requires TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_WHATSAPP_FROM", {
-        requestId,
-      });
+    const smsConfigured = isTwilioSmsConfigured();
+    const whatsappConfigured = isTwilioWhatsAppConfigured();
+    const channelConfigured = channel === "sms" ? smsConfigured : whatsappConfigured;
+
+    if (process.env.NODE_ENV === "production" && !channelConfigured) {
+      const missing =
+        channel === "sms"
+          ? "TWILIO_SMS_FROM (US text login)"
+          : "TWILIO_WHATSAPP_FROM (WhatsApp login)";
+      console.error("[send-otp] production missing channel config", { requestId, channel, missing });
       return NextResponse.json(
         {
-          error:
-            "Verificación por WhatsApp no está configurada en el servidor. Revisa TWILIO_* en el despliegue.",
+          error: `Verificación no configurada en el servidor (${missing}).`,
           requestId,
           step: "twilio_config",
+          channel,
         },
-        { status: 503 }
+        { status: 503 },
       );
     }
 
@@ -121,76 +159,37 @@ export async function POST(req: NextRequest) {
     });
     if (insertError) {
       logSupabaseError("otp-insert-failed", phone, insertError);
-      return NextResponse.json(
-        {
-          error: "No se pudo enviar el código OTP",
-          requestId,
-          step: "insert",
-        },
-        { status: 500 }
-      );
+      return NextResponse.json({ error: "No se pudo enviar el código OTP", requestId, step: "insert" }, { status: 500 });
     }
 
-    if (twilioConfigured) {
+    if (channelConfigured) {
       step = "twilio";
-      const fromAddress = asWhatsappAddress(from!);
-      const msgBody = `Your Sarvaone code is: *${code}*\nValid 5 minutes. Do not share it.`;
-      const authHeader = "Basic " + Buffer.from(`${sid!}:${token!}`).toString("base64");
-      const twilioUrl = `https://api.twilio.com/2010-04-01/Accounts/${sid!}/Messages.json`;
+      const delivery = await deliverOtp(phone, channel, code, requestId);
 
-      // MX numbers: send to both +52 and +521 formats simultaneously.
-      // WhatsApp may register the user under either format; one will
-      // deliver and the other will silently fail with error 63015.
-      const destinations = [phone];
-      if (/^52\d{10}$/.test(phone)) {
-        destinations.push(`521${phone.slice(2)}`);
-      }
-
-      const results = await Promise.all(
-        destinations.map(async (dest) => {
-          const toAddress = asWhatsappAddress(dest);
-          console.log("[send-otp] twilio-attempt", { requestId, phone: dest, toAddress, fromAddress });
-          const res = await fetch(twilioUrl, {
-            method: "POST",
-            headers: { Authorization: authHeader, "Content-Type": "application/x-www-form-urlencoded" },
-            body: new URLSearchParams({ From: fromAddress, To: toAddress, Body: msgBody }),
-          });
-          const body = await res.text();
-          console.log("[send-otp] twilio-response", { requestId, phone: dest, status: res.status, body });
-          return { dest, ok: res.ok, status: res.status, body };
-        })
-      );
-
-      const anyOk = results.some((r) => r.ok);
-      if (!anyOk) {
-        let twilioError = "";
-        let twilioCode: number | undefined;
-        try {
-          const parsed = JSON.parse(results[0].body);
-          twilioError = parsed?.message || parsed?.error_message || "";
-          twilioCode = typeof parsed?.code === "number" ? parsed.code : undefined;
-        } catch {
-          /* not json */
-        }
+      if (!delivery.ok) {
+        const twilioError = delivery.twilioError ?? "";
         const sandboxHint =
-          twilioCode === 63016 || /63016|not a valid WhatsApp user|join.*sandbox/i.test(twilioError)
+          channel === "whatsapp" &&
+          (/63016|not a valid WhatsApp user|join.*sandbox/i.test(twilioError)
             ? " Si usas el sandbox de Twilio, envía primero el mensaje de unión al número de prueba."
-            : "";
+            : "");
 
         if (process.env.NODE_ENV !== "production") {
-          console.warn("[send-otp] Twilio failed in development — returning devOtp so you can still log in", {
+          console.warn("[send-otp] Twilio failed in development — returning devOtp", {
             requestId,
             phone,
+            channel,
             twilioError,
           });
           step = "done";
           return NextResponse.json({
             ok: true,
+            channel,
             devOtp: code,
             requestId,
             devTwilioFailed: true,
             devTwilioHint:
-              `WhatsApp did not deliver (${twilioError || "see terminal log"}). The verify page will use the dev code. For local work you can comment out TWILIO_* in .env.local.${sandboxHint}`,
+              `${channel === "sms" ? "SMS" : "WhatsApp"} did not deliver. Use the dev code on the verify page.${sandboxHint}`,
           });
         }
 
@@ -199,24 +198,26 @@ export async function POST(req: NextRequest) {
             error: `No se pudo enviar el código OTP${twilioError ? `: ${twilioError}` : ""}${sandboxHint}`,
             requestId,
             step: "twilio",
-            twilioStatus: results[0].status,
-            twilioCode,
+            channel,
+            twilioStatus: delivery.twilioStatus,
+            twilioCode: delivery.twilioCode,
           },
-          { status: 500 }
+          { status: 500 },
         );
       }
     } else {
-      console.log(`[DEV OTP] +${phone} -> ${code}`);
+      console.log(`[DEV OTP] +${phone} (${channel}) -> ${code}`);
     }
 
     step = "done";
     if (process.env.NODE_ENV !== "production") {
-      return NextResponse.json({ ok: true, devOtp: code, requestId });
+      return NextResponse.json({ ok: true, channel, devOtp: code, requestId });
     }
-    return NextResponse.json({ ok: true, requestId });
-  } catch (e: any) {
-    console.error("[send-otp] unhandled error", { requestId, step, message: e?.message, stack: e?.stack });
-    const msg = process.env.NODE_ENV === "production" ? "No se pudo enviar el código OTP" : e?.message;
-    return NextResponse.json({ error: msg, requestId, step }, { status: 500 });
+    return NextResponse.json({ ok: true, channel, requestId });
+  } catch (e: unknown) {
+    const msg = e instanceof Error ? e.message : String(e);
+    console.error("[send-otp] unhandled error", { requestId, step, message: msg });
+    const clientMsg = process.env.NODE_ENV === "production" ? "No se pudo enviar el código OTP" : msg;
+    return NextResponse.json({ error: clientMsg, requestId, step }, { status: 500 });
   }
 }

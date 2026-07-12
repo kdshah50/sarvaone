@@ -2,11 +2,26 @@ import { canonicalizeAuthPhone, normalizeAuthPhone } from "@/lib/phone";
 
 const TWILIO_SID = () => process.env.TWILIO_ACCOUNT_SID ?? "";
 const TWILIO_TOKEN = () => process.env.TWILIO_AUTH_TOKEN ?? "";
-const TWILIO_FROM = () => process.env.TWILIO_WHATSAPP_FROM ?? "";
+const TWILIO_WHATSAPP_FROM = () => process.env.TWILIO_WHATSAPP_FROM ?? "";
+const TWILIO_SMS_FROM = () => process.env.TWILIO_SMS_FROM ?? "";
 
 /** True when WhatsApp outbound is configured (before validating recipient). */
 export function isTwilioWhatsAppConfigured(): boolean {
-  return Boolean(TWILIO_SID() && TWILIO_TOKEN() && TWILIO_FROM());
+  return Boolean(TWILIO_SID() && TWILIO_TOKEN() && TWILIO_WHATSAPP_FROM());
+}
+
+/** True when US SMS OTP can be sent (TWILIO_SMS_FROM is E.164, e.g. +15551234567). */
+export function isTwilioSmsConfigured(): boolean {
+  const from = TWILIO_SMS_FROM().trim();
+  return Boolean(TWILIO_SID() && TWILIO_TOKEN() && from && /^\+?\d{10,15}$/.test(from.replace(/\s/g, "")));
+}
+
+function twilioAuthHeader(): string {
+  return "Basic " + Buffer.from(`${TWILIO_SID()}:${TWILIO_TOKEN()}`).toString("base64");
+}
+
+function twilioMessagesUrl(): string {
+  return `https://api.twilio.com/2010-04-01/Accounts/${TWILIO_SID()}/Messages.json`;
 }
 
 function asWhatsappAddress(value: string) {
@@ -17,7 +32,67 @@ function asWhatsappAddress(value: string) {
   return `whatsapp:${cleaned.startsWith("+") ? cleaned : `+${cleaned}`}`;
 }
 
+function asSmsAddress(value: string) {
+  const v = value.trim();
+  if (!v) return v;
+  return v.startsWith("+") ? v : `+${v}`;
+}
+
 const WHATSAPP_RETRY_AFTER_MS = 2200;
+
+async function postTwilioMessage(form: URLSearchParams): Promise<{ ok: boolean; status: number; body: string }> {
+  const url = twilioMessagesUrl();
+  const auth = twilioAuthHeader();
+  for (let attempt = 0; attempt < 4; attempt++) {
+    try {
+      const res = await fetch(url, {
+        method: "POST",
+        headers: { Authorization: auth, "Content-Type": "application/x-www-form-urlencoded" },
+        body: form,
+      });
+      const text = await res.text();
+      if (res.ok) return { ok: true, status: res.status, body: text };
+      if (res.status === 429 && attempt < 3) {
+        await new Promise((r) => setTimeout(r, 1200 * (attempt + 1)));
+        continue;
+      }
+      return { ok: false, status: res.status, body: text };
+    } catch (e) {
+      console.error("[twilio] send error", e);
+      return { ok: false, status: 0, body: String(e) };
+    }
+  }
+  return { ok: false, status: 0, body: "max retries" };
+}
+
+/**
+ * US/CA login OTP via SMS. `toDigits` is E.164 without + (e.g. 15551234567).
+ */
+export async function sendSmsToE164Digits(toDigitsRaw: string, message: string): Promise<boolean> {
+  const digits = canonicalizeAuthPhone(normalizeAuthPhone(String(toDigitsRaw ?? "")));
+  if (!digits || !/^1\d{10}$/.test(digits)) {
+    console.error("[twilio] invalid US SMS recipient", toDigitsRaw);
+    return false;
+  }
+  const sid = TWILIO_SID();
+  const token = TWILIO_TOKEN();
+  const from = TWILIO_SMS_FROM();
+  if (!sid || !token || !from) {
+    console.error("[twilio] missing TWILIO_* or TWILIO_SMS_FROM for SMS");
+    return false;
+  }
+
+  const form = new URLSearchParams({
+    From: asSmsAddress(from),
+    To: asSmsAddress(digits),
+    Body: message,
+  });
+  const result = await postTwilioMessage(form);
+  if (!result.ok) {
+    console.error("[twilio] SMS send failed", { to: digits, status: result.status, body: result.body });
+  }
+  return result.ok;
+}
 
 /**
  * Send using E.164 digits only (no +). Handles US (+1) and Mexico (+52/+521) routes.
@@ -47,39 +122,20 @@ export async function sendWhatsAppToE164Digits(toDigitsRaw: string, message: str
 export async function sendWhatsApp(to: string, message: string): Promise<boolean> {
   const sid = TWILIO_SID();
   const token = TWILIO_TOKEN();
-  const from = TWILIO_FROM();
+  const from = TWILIO_WHATSAPP_FROM();
   if (!sid || !token || !from || !to) {
     console.error("[twilio] missing TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_WHATSAPP_FROM, or empty recipient");
     return false;
   }
 
-  const url = `https://api.twilio.com/2010-04-01/Accounts/${sid}/Messages.json`;
-  const auth = "Basic " + Buffer.from(`${sid}:${token}`).toString("base64");
   const form = new URLSearchParams({
     From: asWhatsappAddress(from),
     To: asWhatsappAddress(to),
     Body: message,
   });
-
-  for (let attempt = 0; attempt < 4; attempt++) {
-    try {
-      const res = await fetch(url, {
-        method: "POST",
-        headers: { Authorization: auth, "Content-Type": "application/x-www-form-urlencoded" },
-        body: form,
-      });
-      const text = await res.text();
-      if (res.ok) return true;
-      if (res.status === 429 && attempt < 3) {
-        await new Promise((r) => setTimeout(r, 1200 * (attempt + 1)));
-        continue;
-      }
-      console.error("[twilio] send failed", { to, status: res.status, body: text });
-      return false;
-    } catch (e) {
-      console.error("[twilio] send error", e);
-      return false;
-    }
+  const result = await postTwilioMessage(form);
+  if (!result.ok) {
+    console.error("[twilio] WhatsApp send failed", { to, status: result.status, body: result.body });
   }
-  return false;
+  return result.ok;
 }

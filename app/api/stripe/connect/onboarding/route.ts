@@ -47,13 +47,13 @@ export async function POST(req: NextRequest) {
 
       const account = await stripe.accounts.create({
         type: "express",
-        country: "MX",
+        country: "US",
         email,
         capabilities: {
           card_payments: { requested: true },
           transfers: { requested: true },
         },
-        metadata: { naranjogo_user_id: user.id as string },
+        metadata: { sarvaone_user_id: user.id as string },
       });
 
       accountId = account.id;

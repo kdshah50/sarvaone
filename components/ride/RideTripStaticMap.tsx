@@ -1,9 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
 import type { Lang } from "@/lib/i18n-lang";
-
-type Point = { lat: number; lng: number; label: string };
 
 type Props = {
   pickup: string;
@@ -12,150 +9,80 @@ type Props = {
   className?: string;
 };
 
-async function geocodeClient(q: string): Promise<Point | null> {
-  const res = await fetch(`/api/geocode/address?q=${encodeURIComponent(q)}`, { cache: "no-store" });
-  if (!res.ok) return null;
-  const data = (await res.json()) as { lat?: number; lng?: number; label?: string };
-  if (typeof data.lat !== "number" || typeof data.lng !== "number") return null;
-  return { lat: data.lat, lng: data.lng, label: data.label ?? q };
+/** Keep Google’s geocoder in the United States when the address omits a country. */
+function usQuery(address: string): string {
+  const q = address.trim();
+  if (/\b(USA|U\.S\.A\.|United States)\b/i.test(q)) return q;
+  return `${q}, USA`;
+}
+
+function googleEmbedSrc(pickup: string, dropoff: string, lang: Lang): string | null {
+  const origin = pickup.trim();
+  const destination = dropoff.trim();
+  const hl = lang === "es" ? "es" : "en";
+  if (origin && destination) {
+    return (
+      "https://maps.google.com/maps?output=embed&hl=" +
+      hl +
+      "&saddr=" +
+      encodeURIComponent(usQuery(origin)) +
+      "&daddr=" +
+      encodeURIComponent(usQuery(destination))
+    );
+  }
+  const one = origin || destination;
+  if (!one) return null;
+  return (
+    "https://maps.google.com/maps?output=embed&hl=" +
+    hl +
+    "&z=14&q=" +
+    encodeURIComponent(usQuery(one))
+  );
+}
+
+function googleMapsHref(pickup: string, dropoff: string): string | null {
+  const origin = pickup.trim();
+  const destination = dropoff.trim();
+  if (origin && destination) {
+    const url = new URL("https://www.google.com/maps/dir/");
+    url.searchParams.set("api", "1");
+    url.searchParams.set("origin", usQuery(origin));
+    url.searchParams.set("destination", usQuery(destination));
+    url.searchParams.set("travelmode", "driving");
+    return url.toString();
+  }
+  const one = origin || destination;
+  if (!one) return null;
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(usQuery(one))}`;
 }
 
 export default function RideTripStaticMap({ pickup, dropoff, lang = "en", className = "" }: Props) {
-  const mapEl = useRef<HTMLDivElement>(null);
-  // Leaflet types only — actual import is client-only (avoids SSR `window is not defined`).
-  const mapRef = useRef<{ remove: () => void } | null>(null);
-  const groupRef = useRef<{ clearLayers: () => void; addTo: (map: unknown) => unknown } | null>(null);
-  const leafletRef = useRef<typeof import("leaflet") | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [points, setPoints] = useState<{ pickup: Point | null; dropoff: Point | null }>({
-    pickup: null,
-    dropoff: null,
-  });
+  const es = lang === "es";
+  const src = googleEmbedSrc(pickup, dropoff, lang);
+  const href = googleMapsHref(pickup, dropoff);
 
-  useEffect(() => {
-    let cancelled = false;
-    (async () => {
-      setLoading(true);
-      setError(null);
-      const [p, d] = await Promise.all([geocodeClient(pickup), geocodeClient(dropoff)]);
-      if (cancelled) return;
-      if (!p && !d) {
-        setError(
-          lang === "es"
-            ? "No se pudo ubicar las direcciones en el mapa."
-            : "Could not place addresses on the map.",
-        );
-        setLoading(false);
-        return;
-      }
-      setPoints({ pickup: p, dropoff: d });
-      setLoading(false);
-    })();
-    return () => {
-      cancelled = true;
-    };
-  }, [pickup, dropoff, lang]);
-
-  useEffect(() => {
-    if (!mapEl.current || mapRef.current) return;
-    let cancelled = false;
-    (async () => {
-      const L = await import("leaflet");
-      await import("leaflet/dist/leaflet.css");
-      if (cancelled || !mapEl.current || mapRef.current) return;
-      leafletRef.current = L;
-      const map = L.map(mapEl.current).setView([40.44, -74.4], 10);
-      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        attribution: "&copy; OpenStreetMap",
-      }).addTo(map);
-      const g = L.layerGroup().addTo(map);
-      mapRef.current = map;
-      groupRef.current = g;
-    })();
-    return () => {
-      cancelled = true;
-      mapRef.current?.remove();
-      mapRef.current = null;
-      groupRef.current = null;
-      leafletRef.current = null;
-    };
-  }, []);
-
-  useEffect(() => {
-    const L = leafletRef.current;
-    const map = mapRef.current as import("leaflet").Map | null;
-    const group = groupRef.current as import("leaflet").LayerGroup | null;
-    if (!L || !map || !group || loading) return;
-
-    group.clearLayers();
-    const pts: import("leaflet").LatLngExpression[] = [];
-
-    if (points.pickup) {
-      const m = L.circleMarker([points.pickup.lat, points.pickup.lng], {
-        radius: 10,
-        fillColor: "#16A34A",
-        color: "#14532D",
-        weight: 2,
-        fillOpacity: 0.9,
-      });
-      m.bindTooltip(lang === "es" ? "Recogida" : "Pickup", { permanent: false });
-      m.addTo(group);
-      pts.push([points.pickup.lat, points.pickup.lng]);
-    }
-
-    if (points.dropoff) {
-      const m = L.circleMarker([points.dropoff.lat, points.dropoff.lng], {
-        radius: 10,
-        fillColor: "#DC2626",
-        color: "#7F1D1D",
-        weight: 2,
-        fillOpacity: 0.9,
-      });
-      m.bindTooltip(lang === "es" ? "Destino" : "Drop-off", { permanent: false });
-      m.addTo(group);
-      pts.push([points.dropoff.lat, points.dropoff.lng]);
-    }
-
-    if (pts.length === 2) {
-      L.polyline(pts as [number, number][], {
-        color: "#1B4332",
-        weight: 3,
-        opacity: 0.55,
-        dashArray: "8 8",
-      }).addTo(group);
-    }
-
-    if (pts.length > 0) {
-      map.fitBounds(L.latLngBounds(pts), { padding: [40, 40], maxZoom: 14 });
-    }
-  }, [points, loading, lang]);
-
-  if (error) {
+  if (!src || !href) {
     return (
       <p className={`text-[11px] text-[#6B7280] italic ${className}`} role="status">
-        {error}
+        {es ? "Agrega recogida y destino para ver el mapa." : "Add pickup and drop-off to see the map."}
       </p>
     );
   }
 
   return (
     <div className={className}>
-      {loading && (
-        <p className="text-[11px] text-[#6B7280] mb-2" role="status">
-          {lang === "es" ? "Cargando mapa…" : "Loading map…"}
-        </p>
-      )}
-      <div
-        ref={mapEl}
-        className="w-full h-48 rounded-xl border border-[#E5E0D8] overflow-hidden bg-[#E8E4DC]"
-        role="img"
-        aria-label={lang === "es" ? "Mapa del trayecto" : "Trip map"}
+      <iframe
+        title={es ? "Ruta en Google Maps" : "Driving route on Google Maps"}
+        src={src}
+        className="w-full h-48 rounded-xl border border-[#E5E0D8] bg-[#E8E4DC]"
+        loading="lazy"
+        referrerPolicy="no-referrer-when-downgrade"
       />
       <p className="text-[10px] text-[#6B7280] mt-1.5 leading-snug">
-        {lang === "es"
-          ? "Vista aproximada — sin ruta en tiempo real."
-          : "Approximate view — no live routing."}
+        {es ? "Ruta en auto en Google Maps. " : "Driving route on Google Maps. "}
+        <a href={href} target="_blank" rel="noopener noreferrer" className="underline font-semibold text-[#1B4332]">
+          {es ? "Abrir en Google Maps" : "Open in Google Maps"}
+        </a>
       </p>
     </div>
   );

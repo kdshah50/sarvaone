@@ -112,7 +112,7 @@ const COPY: Record<
     faq3A:
       "El cliente elige servicios del menú, deja sus datos de contacto y envía la solicitud. Tú revisas, ajustas si hace falta y envías la cotización oficial. El cliente acepta y paga el depósito.",
     faq4Q: "¿Cómo recibo el pago?",
-    faq4A: "El cliente paga en la app. Tu pago se deposita a tu cuenta bancaria mexicana (CLABE) al confirmar el servicio.",
+    faq4A: "El cliente paga en la app. Tu parte se deposita a tu cuenta bancaria de EE. UU. vía Stripe Connect cuando confirmas el servicio.",
     faq5Q: "¿Mi WhatsApp es público?",
     faq5A: "No. Solo clientes que abren chat en la app pueden contactarte.",
     finalTitle: "Empieza hoy. Tarda 5 minutos.",
@@ -121,7 +121,7 @@ const COPY: Record<
     buyerTitle: "Encuentra paseadores y cuidadores cerca de ti.",
     buyerSub: "Mira proveedores aprobados en New Jersey con menú y precios claros.",
     buyerCta: "Buscar cuidado de mascotas",
-    footerNote: "Sarvaone — mercado local en New Jersey de Allende",
+    footerNote: "Sarvaone — mercado local en New Jersey",
     langToggleEs: "ES",
     langToggleEn: "EN",
   },
@@ -171,7 +171,7 @@ const COPY: Record<
     faq3A:
       "The client picks menu items, leaves contact details, and sends the request. You review, adjust if needed, and send the official quote. They accept and pay the deposit.",
     faq4Q: "How do I get paid?",
-    faq4A: "The customer pays in the app. Your share is deposited to your Mexican bank account (CLABE) when you confirm service.",
+    faq4A: "The customer pays in the app. Your share is deposited to your U.S. bank account via Stripe Connect when you confirm service.",
     faq5Q: "Is my WhatsApp public?",
     faq5A: "No. Only customers who open a chat in the app can contact you.",
     finalTitle: "Start today. Takes 5 minutes.",
@@ -180,7 +180,7 @@ const COPY: Record<
     buyerTitle: "Find walkers and sitters near you.",
     buyerSub: "Browse approved pet care listings in New Jersey with clear menus and prices.",
     buyerCta: "Search pet care",
-    footerNote: "Sarvaone — local marketplace in New Jersey de Allende",
+    footerNote: "Sarvaone — local marketplace in New Jersey",
     langToggleEs: "ES",
     langToggleEn: "EN",
   },
@@ -195,8 +195,8 @@ export function generateMetadata({
   const t = COPY[lang];
   const title =
     lang === "es"
-      ? "Cuidado de mascotas en New Jersey de Allende | Sarvaone"
-      : "Pet care in New Jersey de Allende | Sarvaone";
+      ? "Cuidado de mascotas en New Jersey | Sarvaone"
+      : "Pet care in New Jersey | Sarvaone";
   return {
     title,
     description: t.heroSub,

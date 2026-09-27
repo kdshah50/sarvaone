@@ -3,21 +3,24 @@
 import { useState } from "react";
 
 const REASONS = [
-  { value: "fraud", label: "Fraude / estafa" },
-  { value: "fake_listing", label: "Anuncio falso" },
-  { value: "misleading", label: "Información engañosa" },
-  { value: "inappropriate", label: "Contenido inapropiado" },
-  { value: "spam", label: "Spam" },
-  { value: "other", label: "Otro" },
+  { value: "fraud", en: "Fraud / scam", es: "Fraude / estafa" },
+  { value: "fake_listing", en: "Fake listing", es: "Anuncio falso" },
+  { value: "misleading", en: "Misleading information", es: "Información engañosa" },
+  { value: "inappropriate", en: "Inappropriate content", es: "Contenido inapropiado" },
+  { value: "spam", en: "Spam", es: "Spam" },
+  { value: "other", en: "Other", es: "Otro" },
 ] as const;
 
 export default function ReportButton({
   listingId,
   sellerId,
+  lang = "en",
 }: {
   listingId?: string;
   sellerId?: string;
+  lang?: "en" | "es";
 }) {
+  const es = lang === "es";
   const [open, setOpen] = useState(false);
   const [reason, setReason] = useState("");
   const [details, setDetails] = useState("");
@@ -27,7 +30,7 @@ export default function ReportButton({
 
   const submit = async () => {
     if (!reason) {
-      setError("Selecciona un motivo");
+      setError(es ? "Selecciona un motivo" : "Choose a reason");
       return;
     }
     setSubmitting(true);
@@ -47,15 +50,15 @@ export default function ReportButton({
       if (!res.ok) {
         const data = await res.json().catch(() => null);
         if (res.status === 401) {
-          setError("Inicia sesión para reportar");
+          setError(es ? "Inicia sesión para reportar" : "Log in to report");
         } else {
-          setError(data?.error ?? "Error al enviar");
+          setError(data?.error ?? (es ? "Error al enviar" : "Could not send"));
         }
         return;
       }
       setDone(true);
     } catch {
-      setError("Error de conexión");
+      setError(es ? "Error de conexión" : "Connection error");
     } finally {
       setSubmitting(false);
     }
@@ -64,7 +67,9 @@ export default function ReportButton({
   if (done) {
     return (
       <div className="text-center py-2">
-        <span className="text-xs text-emerald-600 font-semibold">✓ Reporte enviado — lo revisaremos pronto</span>
+        <span className="text-xs text-emerald-600 font-semibold">
+          {es ? "✓ Reporte enviado — lo revisaremos pronto" : "✓ Report sent — we’ll review it soon"}
+        </span>
       </div>
     );
   }
@@ -80,7 +85,7 @@ export default function ReportButton({
           <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z" />
           <line x1="4" y1="22" x2="4" y2="15" />
         </svg>
-        Reportar
+        {es ? "Reportar" : "Report"}
       </button>
 
       {open && (
@@ -91,7 +96,7 @@ export default function ReportButton({
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-4">
-              <h3 className="font-semibold text-[#1C1917]">Reportar anuncio</h3>
+              <h3 className="font-semibold text-[#1C1917]">{es ? "Reportar anuncio" : "Report listing"}</h3>
               <button
                 type="button"
                 onClick={() => setOpen(false)}
@@ -102,7 +107,9 @@ export default function ReportButton({
             </div>
 
             <p className="text-xs text-[#6B7280] mb-4">
-              Tu reporte es anónimo para el vendedor. Nuestro equipo lo revisará en 24 horas.
+              {es
+                ? "Tu reporte es anónimo para el vendedor. Nuestro equipo lo revisará en 24 horas."
+                : "Your report is anonymous to the seller. We’ll review it within 24 hours."}
             </p>
 
             <div className="space-y-2 mb-4">
@@ -123,7 +130,7 @@ export default function ReportButton({
                     onChange={() => setReason(r.value)}
                     className="accent-red-500"
                   />
-                  <span className="text-sm text-[#1C1917]">{r.label}</span>
+                  <span className="text-sm text-[#1C1917]">{es ? r.es : r.en}</span>
                 </label>
               ))}
             </div>
@@ -131,7 +138,7 @@ export default function ReportButton({
             <textarea
               value={details}
               onChange={(e) => setDetails(e.target.value)}
-              placeholder="Detalles adicionales (opcional)"
+              placeholder={es ? "Detalles adicionales (opcional)" : "Extra details (optional)"}
               maxLength={2000}
               rows={3}
               className="w-full rounded-xl border border-[#E5E0D8] px-4 py-3 text-sm text-[#1C1917] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-red-300 resize-none mb-3"
@@ -145,7 +152,7 @@ export default function ReportButton({
                 onClick={() => setOpen(false)}
                 className="flex-1 py-3 rounded-xl border border-[#E5E0D8] text-sm font-semibold text-[#6B7280] hover:bg-[#F4F0EB] transition-colors"
               >
-                Cancelar
+                {es ? "Cancelar" : "Cancel"}
               </button>
               <button
                 type="button"
@@ -153,7 +160,7 @@ export default function ReportButton({
                 disabled={submitting || !reason}
                 className="flex-1 py-3 rounded-xl bg-red-500 text-white text-sm font-semibold disabled:opacity-50 hover:bg-red-600 transition-colors"
               >
-                {submitting ? "Enviando…" : "Enviar reporte"}
+                {submitting ? (es ? "Enviando…" : "Sending…") : es ? "Enviar reporte" : "Send report"}
               </button>
             </div>
           </div>

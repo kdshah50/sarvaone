@@ -180,13 +180,16 @@ async function runVerticalFlow(
   if (!req.ok) fail(`${vert.key} quote/request: ${req.status} ${JSON.stringify(req.data)}`);
   ok("Buyer quote request");
 
-  const convRes = await fetchJson(base, `/api/conversations?listingId=${encodeURIComponent(listingId)}`, {
-    cookieJwt: buyerToken,
-  });
-  const conversationId =
-    (convRes.data as { conversations?: { id: string }[] })?.conversations?.[0]?.id;
+  let conversationId = (req.data as { conversationId?: string })?.conversationId;
+  if (!conversationId) {
+    const convRes = await fetchJson(base, `/api/conversations?listingId=${encodeURIComponent(listingId)}`, {
+      cookieJwt: buyerToken,
+    });
+    conversationId =
+      (convRes.data as { conversations?: { id: string }[] })?.conversations?.[0]?.id;
+  }
   if (!conversationId) fail(`${vert.key}: no conversation after request`);
-
+  ok(`Conversation ${conversationId.slice(0, 8)}…`);
   const { data: gateBefore } = await supabase
     .from("listing_service_contact_gate")
     .select("quote_status,quote_line_items")
@@ -366,8 +369,12 @@ async function main() {
     },
   ];
 
-  // Clean any leftover seeds
-  await supabase.from("listings").delete().ilike("title_es", `%${seedMarker}%`);
+  // Clean any leftover seeds (title_es and title_en).
+  const { error: seedCleanupErr } = await supabase
+    .from("listings")
+    .delete()
+    .or(`title_es.ilike.%${seedMarker}%,title_en.ilike.%${seedMarker}%`);
+  if (seedCleanupErr) console.error("cleanup leftover seeds:", seedCleanupErr.message);
 
   const seededIds: string[] = [];
   const verticals: Array<{
@@ -442,9 +449,15 @@ async function main() {
     }
   } finally {
     if (seededIds.length) {
-      await supabase.from("listings").delete().in("id", seededIds);
-      console.log(`\nRemoved ${seededIds.length} temp seeded listings`);
+      const { error: removeErr } = await supabase.from("listings").delete().in("id", seededIds);
+      if (removeErr) console.error("remove temp seeds:", removeErr.message);
+      else console.log(`\nRemoved ${seededIds.length} temp seeded listings`);
     }
+    const { error: markerErr } = await supabase
+      .from("listings")
+      .delete()
+      .or(`title_es.ilike.%${seedMarker}%,title_en.ilike.%${seedMarker}%`);
+    if (markerErr) console.error("remove marker seeds:", markerErr.message);
   }
 
   console.log("\n════════ SUMMARY ════════");

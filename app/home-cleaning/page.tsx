@@ -116,9 +116,9 @@ const COPY: Record<
     finalSub: "Cargamos tu menú con 32 servicios de referencia por visita. Solo ajustas precios y listo.",
     buyerEyebrow: "¿Buscas limpieza?",
     buyerTitle: "Encuentra limpieza del hogar cerca de ti.",
-    buyerSub: "Mira proveedores aprobados en New Jersey de Allende, con menú y precios claros.",
+    buyerSub: "Mira proveedores aprobados en New Jersey, con menú y precios claros.",
     buyerCta: "Ver limpieza en NJ",
-    footerNote: "Sarvaone — mercado local en New Jersey de Allende",
+    footerNote: "Sarvaone — mercado local en New Jersey",
     langToggleEs: "ES",
     langToggleEn: "EN",
   },
@@ -179,9 +179,9 @@ const COPY: Record<
     finalSub: "We load your menu with 32 per-visit reference services. Just adjust prices and you're done.",
     buyerEyebrow: "Need a cleaner?",
     buyerTitle: "Find home cleaning near you.",
-    buyerSub: "Browse approved cleaning providers in New Jersey de Allende with clear menus and prices.",
+    buyerSub: "Browse approved cleaning providers in New Jersey with clear menus and prices.",
     buyerCta: "Browse cleaners in NJ",
-    footerNote: "Sarvaone — local marketplace in New Jersey de Allende",
+    footerNote: "Sarvaone — local marketplace in New Jersey",
     langToggleEs: "ES",
     langToggleEn: "EN",
   },
@@ -196,8 +196,8 @@ export function generateMetadata({
   const t = COPY[lang];
   const title =
     lang === "es"
-      ? "Limpieza del hogar en New Jersey de Allende | Sarvaone"
-      : "House cleaning in New Jersey de Allende | Sarvaone";
+      ? "Limpieza del hogar en New Jersey | Sarvaone"
+      : "House cleaning in New Jersey | Sarvaone";
   return {
     title,
     description: t.heroSub,

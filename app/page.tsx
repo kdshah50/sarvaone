@@ -23,7 +23,7 @@ import {
 import { normalizeBrowseCategory } from "@/lib/marketplace-categories";
 import { detectZipInQuery, normalizeUsZip5 } from "@/lib/us-zip";
 import { geocodeUsZip } from "@/lib/geocode-us-zip";
-import { postgrestActiveListingVerificationFragment } from "@/lib/browse-listings-filters";
+import { postgrestActiveListingVerificationFragment, publicBrowseRows } from "@/lib/browse-listings-filters";
 import { langFromParam } from "@/lib/i18n-lang";
 import { listingTitle } from "@/lib/listing-language";
 import { formatUsdCents } from "@/lib/money";
@@ -251,7 +251,7 @@ export default async function HomePage({ searchParams }: Props) {
       }
       if (browseRes.ok) {
         const data = await browseRes.json();
-        let rows = Array.isArray(data) ? data : [];
+        let rows = publicBrowseRows(Array.isArray(data) ? data : []);
 
         if (coloniaData) {
           const cd = coloniaData;
@@ -381,7 +381,7 @@ export default async function HomePage({ searchParams }: Props) {
         </Suspense>
         </div>
       </section>
-      <TrustBar />
+      <TrustBar lang={lang} />
     </main>
   );
 }

@@ -63,7 +63,7 @@ const COPY: Record<
     navHome: "← Inicio",
     heroEyebrow: "Para clínicas veterinarias y médicos a domicilio",
     heroTitle: "Llega más dueños de mascotas a tu consulta.",
-    heroSub: "Aparece en el directorio de Sarvaone en New Jersey de Allende — registro gratis, menú de precios fijos, cobros seguros en la app y presupuestos desde el chat.",
+    heroSub: "Aparece en el directorio de Sarvaone en New Jersey — registro gratis, menú de precios fijos, cobros seguros en la app y presupuestos desde el chat.",
     ctaPrimary: "Registrarme gratis",
     ctaSecondary: "Ver cómo funciona",
     badgeFree: "Registro gratis",
@@ -96,7 +96,7 @@ const COPY: Record<
     faq2Q: "¿Necesito clínica física?",
     faq2A: "No obligatorio. Puedes ser consulta a domicilio, clínica o mixta. Lo indicas en tu perfil y menú (ej. visita a domicilio).",
     faq3Q: "¿Cómo recibo el pago?",
-    faq3A: "El cliente paga en la app. Tu pago se deposita a tu cuenta bancaria mexicana (CLABE) al confirmar el servicio.",
+    faq3A: "El cliente paga en la app. Tu parte se deposita a tu cuenta bancaria de EE. UU. vía Stripe Connect cuando confirmas el servicio.",
     faq4Q: "¿Y si el caso es más complejo al examinar?",
     faq4A: "Ajustas el presupuesto en el chat antes de cobrar. Cada cotización incluye la nota de que el precio puede cambiar tras el examen físico.",
     faq5Q: "¿Mi WhatsApp es público?",
@@ -105,9 +105,9 @@ const COPY: Record<
     finalSub: "Cargamos tu menú con 35 servicios de referencia. Solo ajustas precios y listo.",
     buyerEyebrow: "¿Buscas veterinaria?",
     buyerTitle: "Encuentra una clínica cerca de ti.",
-    buyerSub: "Mira veterinarias aprobadas en New Jersey de Allende, con menú y precios claros.",
+    buyerSub: "Mira veterinarias aprobadas en New Jersey, con menú y precios claros.",
     buyerCta: "Ver veterinarias en NJ",
-    footerNote: "Sarvaone — mercado local en New Jersey de Allende",
+    footerNote: "Sarvaone — mercado local en New Jersey",
     langToggleEs: "ES",
     langToggleEn: "EN",
   },
@@ -115,7 +115,7 @@ const COPY: Record<
     navHome: "← Home",
     heroEyebrow: "For veterinary clinics and mobile vets",
     heroTitle: "Reach more pet owners from your practice.",
-    heroSub: "List on Sarvaone in New Jersey de Allende — free signup, fixed-price service menu, secure in-app payments, and quotes built from chat.",
+    heroSub: "List on Sarvaone in New Jersey — free signup, fixed-price service menu, secure in-app payments, and quotes built from chat.",
     ctaPrimary: "Sign up for free",
     ctaSecondary: "See how it works",
     badgeFree: "Free signup",
@@ -148,7 +148,7 @@ const COPY: Record<
     faq2Q: "Do I need a physical clinic?",
     faq2A: "Not required. Home visits, clinic, or hybrid — you describe it on your profile and menu (e.g. home visit fee).",
     faq3Q: "How do I get paid?",
-    faq3A: "The customer pays in the app. Your share is deposited to your Mexican bank account (CLABE) when you confirm service.",
+    faq3A: "The customer pays in the app. Your share is deposited to your U.S. bank account via Stripe Connect when you confirm service.",
     faq4Q: "What if the case is more complex after exam?",
     faq4A: "Adjust the quote in chat before charging. Every quote includes the note that price may change after physical exam.",
     faq5Q: "Is my WhatsApp public?",
@@ -157,9 +157,9 @@ const COPY: Record<
     finalSub: "We load your menu with 35 reference services. Just adjust prices and you're done.",
     buyerEyebrow: "Need a vet?",
     buyerTitle: "Find a clinic near you.",
-    buyerSub: "Browse approved veterinary listings in New Jersey de Allende with clear menus and prices.",
+    buyerSub: "Browse approved veterinary listings in New Jersey with clear menus and prices.",
     buyerCta: "Browse vets in NJ",
-    footerNote: "Sarvaone — local marketplace in New Jersey de Allende",
+    footerNote: "Sarvaone — local marketplace in New Jersey",
     langToggleEs: "ES",
     langToggleEn: "EN",
   },
@@ -174,8 +174,8 @@ export function generateMetadata({
   const t = COPY[lang];
   const title =
     lang === "es"
-      ? "Servicios veterinarios en New Jersey de Allende | Sarvaone"
-      : "Veterinary services in New Jersey de Allende | Sarvaone";
+      ? "Servicios veterinarios en New Jersey | Sarvaone"
+      : "Veterinary services in New Jersey | Sarvaone";
   return {
     title,
     description: t.heroSub,

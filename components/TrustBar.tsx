@@ -1,9 +1,18 @@
-export default function TrustBar() {
-  const items = [
-    { icon: "🛡️", title: "Compra protegida",     sub: "Escrow hasta confirmar" },
-    { icon: "✓",  title: "Vendedores verificados", sub: "Licencia (DL) · EIN de negocio · teléfono" },
-    { icon: "⚡", title: "Publicar en 30s",        sub: "IA detecta tu artículo" },
-  ];
+import { langForUiCopy, type Lang } from "@/lib/i18n-lang";
+
+export default function TrustBar({ lang = "en" }: { lang?: Lang }) {
+  const es = langForUiCopy(lang) === "es";
+  const items = es
+    ? [
+        { icon: "🛡️", title: "Compra protegida", sub: "Depósito en garantía hasta confirmar" },
+        { icon: "✓", title: "Vendedores verificados", sub: "Licencia · EIN de negocio · teléfono" },
+        { icon: "⚡", title: "Publicar en 30s", sub: "La IA detecta tu servicio" },
+      ]
+    : [
+        { icon: "🛡️", title: "Buyer protection", sub: "Escrow until confirmed" },
+        { icon: "✓", title: "Verified sellers", sub: "Driver’s license · business EIN · phone" },
+        { icon: "⚡", title: "List in 30 seconds", sub: "AI detects your service" },
+      ];
   return (
     <div translate="no" className="notranslate bg-[#1B4332] py-10 px-4 mt-10">
       <div className="max-w-5xl mx-auto grid grid-cols-3 gap-6 text-center">
@@ -17,12 +26,13 @@ export default function TrustBar() {
       </div>
       <div className="max-w-5xl mx-auto mt-8 pt-8 border-t border-white/20 flex flex-col sm:flex-row items-center justify-between gap-4">
         <div className="text-center sm:text-left">
-          <p className="text-white font-semibold text-sm">¿Ofreces un servicio en Nueva Jersey?</p>
-          <p className="text-white/60 text-xs mt-0.5">Are you a local service provider in New Jersey?</p>
+          <p className="text-white font-semibold text-sm">
+            {es ? "¿Ofreces un servicio en Nueva Jersey?" : "Do you offer a service in New Jersey?"}
+          </p>
         </div>
         <a href="/unete"
           className="bg-[#D4A017] hover:bg-[#C4900D] text-white font-semibold px-6 py-2.5 rounded-xl text-sm transition-colors whitespace-nowrap">
-          ✓ Registra tu servicio gratis → Join us
+          {es ? "✓ Registra tu servicio gratis" : "✓ List your service free"}
         </a>
       </div>
     </div>

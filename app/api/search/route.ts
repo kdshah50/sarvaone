@@ -12,7 +12,7 @@ import {
   postgrestSparseKeywordClauseLoose,
   type ParsedQueryFilters,
 } from "@/lib/search-query-parse";
-import { postgrestActiveListingVerificationFragment } from "@/lib/browse-listings-filters";
+import { postgrestActiveListingVerificationFragment, publicBrowseRows } from "@/lib/browse-listings-filters";
 import { browseEnabledServiceVerticalIds, isBrowseEnabledCategoryId } from "@/lib/marketplace-categories";
 import { cosineSimilarity, parseStoredEmbedding, similarityScore01 } from "@/lib/search-embedding";
 import { inferProviderSlugFromListingTitle } from "@/lib/infer-listing-provider-slug";
@@ -473,7 +473,7 @@ export async function GET(req: NextRequest) {
     });
   }
 
-  fused = fused.filter((l) => listingMatchesPriceFilters(l.price_mxn, effective));
+  fused = publicBrowseRows(fused.filter((l) => listingMatchesPriceFilters(l.price_mxn, effective)));
 
   let results = fused
     .map((l) => ({
@@ -551,7 +551,7 @@ export async function GET(req: NextRequest) {
                 (Number(a._dist_km) || 9999) - (Number(b._dist_km) || 9999),
             );
         }
-        results = fbRows.slice(0, 24).map((listing: any) => ({
+        results = publicBrowseRows(fbRows).slice(0, 24).map((listing: any) => ({
           ...listing,
           _score: 0,
           _mode: "browse_fallback",

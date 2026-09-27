@@ -97,7 +97,7 @@ function CartPageInner() {
 
   return (
     <main className="max-w-lg mx-auto px-4 py-8">
-      <h1 className="font-serif text-2xl font-bold text-[#1B4332] mb-2">Carrito</h1>
+      <h1 className="font-serif text-2xl font-bold text-[#1B4332] mb-2">{lang === "es" ? "Carrito" : "Cart"}</h1>
       <p className="text-sm text-[#6B7280] mb-4">
         Compra de artículos (no servicios). Comisión e IVA se muestran antes de pagar; la comisión por anuncio la define el
         admin como en servicios.

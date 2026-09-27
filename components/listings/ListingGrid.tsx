@@ -273,7 +273,7 @@ export default function ListingGrid({
                   />
                 </div>
                 <div className="flex-shrink-0 self-center">
-                  <WhatsAppBadgeLocked />
+                  <WhatsAppBadgeLocked lang={lang === "es" ? "es" : "en"} />
                 </div>
               </div>
             </div>

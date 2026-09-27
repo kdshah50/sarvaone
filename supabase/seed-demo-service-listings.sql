@@ -33,6 +33,13 @@ BEGIN
     RAISE EXCEPTION 'public.users is empty — create an account first, then re-run.';
   END IF;
 
+  -- Re-running this seed must not stack identical demo rows.
+  DELETE FROM public.listings
+  WHERE title_en ILIKE '%(demo svc QA)%'
+     OR title_es ILIKE '%(demo svc QA)%'
+     OR title_en ILIKE '%demo (QA)%'
+     OR title_es ILIKE '%demo (QA)%';
+
   INSERT INTO public.listings (
     seller_id, title_es, title_en, description_es, description_en,
     price_mxn, category_id, condition, status, is_verified,

@@ -363,7 +363,7 @@ export default async function ListingPage({
 
         {/* Report */}
         <div className="mt-8 pt-6 border-t border-[#E5E0D8] flex justify-center">
-          <ReportButton listingId={params.id} sellerId={sellerId} />
+          <ReportButton listingId={params.id} sellerId={sellerId} lang={listingLang === "es" ? "es" : "en"} />
         </div>
       </div>
     </main>

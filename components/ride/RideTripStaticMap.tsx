@@ -1,8 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import L from "leaflet";
-import "leaflet/dist/leaflet.css";
 import type { Lang } from "@/lib/i18n-lang";
 
 type Point = { lat: number; lng: number; label: string };
@@ -24,8 +22,10 @@ async function geocodeClient(q: string): Promise<Point | null> {
 
 export default function RideTripStaticMap({ pickup, dropoff, lang = "en", className = "" }: Props) {
   const mapEl = useRef<HTMLDivElement>(null);
-  const mapRef = useRef<L.Map | null>(null);
-  const groupRef = useRef<L.LayerGroup | null>(null);
+  // Leaflet types only — actual import is client-only (avoids SSR `window is not defined`).
+  const mapRef = useRef<{ remove: () => void } | null>(null);
+  const groupRef = useRef<{ clearLayers: () => void; addTo: (map: unknown) => unknown } | null>(null);
+  const leafletRef = useRef<typeof import("leaflet") | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [points, setPoints] = useState<{ pickup: Point | null; dropoff: Point | null }>({
@@ -59,27 +59,37 @@ export default function RideTripStaticMap({ pickup, dropoff, lang = "en", classN
 
   useEffect(() => {
     if (!mapEl.current || mapRef.current) return;
-    const map = L.map(mapEl.current).setView([40.44, -74.4], 10);
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      attribution: "&copy; OpenStreetMap",
-    }).addTo(map);
-    const g = L.layerGroup().addTo(map);
-    mapRef.current = map;
-    groupRef.current = g;
+    let cancelled = false;
+    (async () => {
+      const L = await import("leaflet");
+      await import("leaflet/dist/leaflet.css");
+      if (cancelled || !mapEl.current || mapRef.current) return;
+      leafletRef.current = L;
+      const map = L.map(mapEl.current).setView([40.44, -74.4], 10);
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        attribution: "&copy; OpenStreetMap",
+      }).addTo(map);
+      const g = L.layerGroup().addTo(map);
+      mapRef.current = map;
+      groupRef.current = g;
+    })();
     return () => {
-      map.remove();
+      cancelled = true;
+      mapRef.current?.remove();
       mapRef.current = null;
       groupRef.current = null;
+      leafletRef.current = null;
     };
   }, []);
 
   useEffect(() => {
-    const map = mapRef.current;
-    const group = groupRef.current;
-    if (!map || !group || loading) return;
+    const L = leafletRef.current;
+    const map = mapRef.current as import("leaflet").Map | null;
+    const group = groupRef.current as import("leaflet").LayerGroup | null;
+    if (!L || !map || !group || loading) return;
 
     group.clearLayers();
-    const pts: L.LatLngExpression[] = [];
+    const pts: import("leaflet").LatLngExpression[] = [];
 
     if (points.pickup) {
       const m = L.circleMarker([points.pickup.lat, points.pickup.lng], {

@@ -169,9 +169,11 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
       messageBody += lang === "en" ? `\n\nNotes: ${buyerNotes}` : `\n\nNotas: ${buyerNotes}`;
     }
 
+    // Chat insert may fail if listing_messages audit trigger is broken (digest/pgcrypto).
+    // Quote gate is the source of truth for booking — do not block the request on chat.
     const inserted = await insertListingChatMessage(supabase, conv.id, buyerUserId, messageBody);
     if (!inserted) {
-      return NextResponse.json({ error: "No se pudo enviar la solicitud" }, { status: 500 });
+      console.warn("[service-quote/request] chat insert failed; continuing with contact gate only");
     }
 
     const now = new Date().toISOString();

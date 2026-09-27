@@ -164,7 +164,15 @@ export async function insertListingChatMessage(
     .select("id,sender_id,body,created_at")
     .single();
   if (error || !data) {
-    console.error("[service-quote] insert message", error);
+    const msg = String(error?.message ?? "");
+    if (/digest\(text,\s*unknown\)/i.test(msg) || /digest\(/i.test(msg)) {
+      console.error(
+        "[service-quote] insert message blocked by broken listing_messages audit trigger (digest/pgcrypto). Apply supabase/migrations/20260927180000_fix_listing_message_audit_digest.sql in Supabase SQL Editor.",
+        error,
+      );
+    } else {
+      console.error("[service-quote] insert message", error);
+    }
     return null;
   }
   return data as { id: string; sender_id: string; body: string; created_at: string };

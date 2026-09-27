@@ -18,7 +18,11 @@ import {
 } from "@/lib/service-quote-vertical";
 import { TRANSPORT_APP_SERVICE } from "@/lib/provider-services";
 import { parseRideTripAddresses } from "@/lib/ride-trip-addresses";
-import RideTripStaticMap from "@/components/ride/RideTripStaticMap";
+import dynamic from "next/dynamic";
+
+const RideTripStaticMap = dynamic(() => import("@/components/ride/RideTripStaticMap"), {
+  ssr: false,
+});
 
 type Props = {
   lineItems: ServiceQuoteLineItem[];
